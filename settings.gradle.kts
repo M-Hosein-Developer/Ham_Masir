@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Ham Masir"
-include(":app")
- 
+include(":presentation")
+include(":data")
