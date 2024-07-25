@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Ham Masir"
 include(":presentation")
 include(":data")
+include(":domain")
