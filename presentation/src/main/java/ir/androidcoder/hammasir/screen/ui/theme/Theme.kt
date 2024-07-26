@@ -1,6 +1,5 @@
-package ir.androidcoder.hammasir.ui.theme
+package ir.androidcoder.hammasir.screen.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

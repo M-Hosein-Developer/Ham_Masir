@@ -1,4 +1,4 @@
-package ir.androidcoder.hammasir.ui.theme
+package ir.androidcoder.hammasir.screen.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

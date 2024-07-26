@@ -1,4 +1,4 @@
-package ir.androidcoder.hammasir.ui.theme
+package ir.androidcoder.hammasir.screen.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
