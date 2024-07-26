@@ -100,4 +100,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx.v280)
     implementation(libs.androidx.lifecycle.runtime.ktx.v280)
 
+    //Map
+    implementation(libs.osmdroid.android)
+
 }
