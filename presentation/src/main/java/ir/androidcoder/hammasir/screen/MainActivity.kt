@@ -1,6 +1,8 @@
 package ir.androidcoder.hammasir.screen
 
+import android.graphics.Canvas
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,11 +13,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import ir.androidcoder.hammasir.screen.feature.MapScreen
 import ir.androidcoder.hammasir.screen.ui.theme.HamMasirTheme
+import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -28,28 +37,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             HamMasirTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MapScreen(mapViewModel)
+                    MyScreen(mapViewModel)
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun MapScreen(mapViewModel: MapViewModel) {
-    AndroidView(factory = { context ->
-        MapView(context).also { mapView ->
-            mapViewModel.initializeMap(mapView)
-            mapViewModel.centerMapAt(GeoPoint(35.694669, 52.031546) , 20.0)
-        }
-    }, modifier = Modifier.fillMaxSize())
+fun MyScreen(mapViewModel: MapViewModel) {
 
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = MyScreen.MapScreen.route) {
 
-    // Cleanup when this composable is disposed
-    DisposableEffect(Unit) {
-        onDispose {
-            mapViewModel.mMap.onDetach()
+        composable(MyScreen.MapScreen.route){
+            MapScreen(mapViewModel)
         }
+
     }
+
+
 }
+
+
