@@ -1,15 +1,22 @@
 package ir.androidcoder.hammasir.viewModel
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.location.Location
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.androidcoder.hammasir.R
 import org.osmdroid.config.Configuration
@@ -29,7 +36,9 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
     private lateinit var mMyLocationOverlay: MyLocationNewOverlay
     private var clickMarker: Marker? = null
     private var initialMarker: Marker? = null
+    private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
+    //---Init Map-----------------------------------------------------------------------------------
     fun initializeMap(mapView: MapView) {
         Configuration.getInstance().load(context, context.getSharedPreferences(context.getString(R.string.app_name), Application.MODE_PRIVATE))
 
@@ -46,7 +55,6 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
             runOnFirstFix {
                 val myLocation = myLocation
                 mMap.controller.setCenter(myLocation)
-                mMap.controller.animateTo(myLocation)
                 setInitialMarker(myLocation)
             }
         }
@@ -58,6 +66,8 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
         setInitialMarker(location)
     }
 
+
+    //---Add Marker By Click------------------------------------------------------------------------
     private fun setInitialMarker(location: GeoPoint) {
         if (initialMarker == null) {
             initialMarker = Marker(mMap).apply {
@@ -84,7 +94,7 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
         mMap.invalidate()
     }
 
-    //Icon Size
+    //---Icon Size----------------------------------------------------------------------------------
     private fun resizeDrawable(drawableRes: Int, width: Int, height: Int): Drawable {
         val drawable = ContextCompat.getDrawable(context, drawableRes)
         val bitmap = drawableToBitmap(drawable)
@@ -105,6 +115,25 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
         return bitmap
+    }
+
+
+    //---Location-----------------------------------------------------------------------------------
+    fun getUserLocation(context: Context) : Pair<Double , Double> {
+
+        var getLocation = Pair(0.0 , 0.0)
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    getLocation = Pair(it.latitude , it.longitude)
+                }
+            }
+        } else {
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+
+        return getLocation
     }
 
 }
