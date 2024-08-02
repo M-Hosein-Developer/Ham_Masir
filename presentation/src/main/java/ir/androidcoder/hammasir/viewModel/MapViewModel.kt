@@ -15,10 +15,13 @@ import android.location.Location
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.androidcoder.hammasir.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -63,7 +66,12 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
     fun centerMapAt(location: GeoPoint, zoomLevel: Double) {
         mMap.controller.setZoom(zoomLevel)
         mMap.controller.setCenter(location)
-        setInitialMarker(location)
+
+        viewModelScope.launch {
+            delay(4000)
+            setInitialMarker(location)
+        }
+
     }
 
 
@@ -73,7 +81,7 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
             initialMarker = Marker(mMap).apply {
                 position = location
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                icon = resizeDrawable(R.drawable.now_locat, 60, 60)
+                icon = resizeDrawable(R.drawable.now_locat, 120, 120)
                 mMap.overlays.add(this)
             }
         } else {
@@ -86,7 +94,7 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
         if (clickMarker == null) {
             clickMarker = Marker(mMap).apply {
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                icon = resizeDrawable(R.drawable.select_locat, 60, 60)
+                icon = resizeDrawable(R.drawable.select_locat, 120, 120)
                 mMap.overlays.add(this)
             }
         }

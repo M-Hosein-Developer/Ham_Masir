@@ -80,7 +80,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
                 coroutineScope.launch {
                     val userLocation = mapViewModel.getUserLocation(context)
                     userLocation?.let {
-                        mapViewModel.centerMapAt(GeoPoint(it.first, it.second), 20.0)
+                        mapViewModel.centerMapAt(GeoPoint(it.first, it.second), 18.0)
                     }
 
                     mapView.overlays.add(object : Overlay() {
@@ -114,11 +114,11 @@ fun MapSetting(mapViewModel: MapViewModel) {
                     mapViewModel.initializeMap(mapView)
                     coroutineScope.launch {
 
-                        mapViewModel.centerMapAt(GeoPoint(0.0, 0.0), 20.0)
+                        mapViewModel.centerMapAt(GeoPoint(0.0, 0.0), 18.0)
 
                         mapView.overlays.add(object : Overlay() {
                             override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {
-                                // نیازی به پیاده‌سازی این قسمت نیست
+
                             }
 
                             override fun onSingleTapConfirmed(
