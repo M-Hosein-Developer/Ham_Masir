@@ -1,14 +1,9 @@
 package ir.androidcoder.data.model
 
 data class RouteResponse(
-    val hints: Hints,
     val info: Info,
     val paths: List<Path>
 ) {
-    data class Hints(
-        val visited_nodes.average: Double,
-        val visited_nodes.sum: Int
-    )
 
     data class Info(
         val copyrights: List<String>,
