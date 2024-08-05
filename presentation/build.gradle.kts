@@ -86,10 +86,6 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.fragment)
 
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
     //Room
     implementation (libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
@@ -103,5 +99,9 @@ dependencies {
 
     //Map
     implementation(libs.osmdroid.android)
+
+    //GraphHopper
+    implementation ("org.osmdroid:osmdroid-android:6.1.10")
+    implementation ("com.graphhopper:graphhopper-core:6.0")
 
 }
