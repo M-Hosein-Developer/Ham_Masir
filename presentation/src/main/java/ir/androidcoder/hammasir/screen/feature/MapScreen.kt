@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package ir.androidcoder.hammasir.screen.feature
 
 import android.Manifest
@@ -79,7 +81,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
                 mapViewModel.initializeMap(mapView)
                 coroutineScope.launch {
                     val userLocation = mapViewModel.getUserLocation(context)
-                    userLocation?.let {
+                    userLocation.let {
                         mapViewModel.centerMapAt(GeoPoint(it.first, it.second), 18.0)
                     }
 

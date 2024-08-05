@@ -68,7 +68,7 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
         mMap.controller.setCenter(location)
 
         viewModelScope.launch {
-            delay(4000)
+            delay(5000)
             setInitialMarker(location)
         }
 
