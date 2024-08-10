@@ -12,6 +12,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.androidcoder.domain.useCase.road.RoadUsecase
 import ir.androidcoder.hammasir.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,13 +29,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
-class MapViewModel @Inject constructor(private val context: Context) : ViewModel() {
+class MapViewModel @Inject constructor(private val context: Context , private val roadUsecase: RoadUsecase) : ViewModel() {
 
     lateinit var mMap: MapView
     private lateinit var mMyLocationOverlay: MyLocationNewOverlay
@@ -127,21 +130,106 @@ class MapViewModel @Inject constructor(private val context: Context) : ViewModel
 
 
     //---Location-----------------------------------------------------------------------------------
-    fun getUserLocation(context: Context) : Pair<Double , Double> {
+    fun getUserLocation(context: Context, callback: (Double, Double) -> Unit) {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-        var getLocation = Pair(0.0 , 0.0)
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    getLocation = Pair(it.latitude , it.longitude)
+                    val latitude = it.latitude
+                    val longitude = it.longitude
+                    callback(latitude, longitude)
+                } ?: run {
+                    // زمانی که مکان در دسترس نیست
+                    Log.e("locat1", "Location is null")
+                    callback(51.131, 12.414) // مقدار پیش‌فرض
                 }
             }
         } else {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            // زمانی که اجازه‌ دسترسی صادر نشده
+            Log.e("locat1", "Permission not granted")
+            callback(51.131, 12.414) // مقدار پیش‌فرض
+        }
+    }
+
+
+    //---
+    fun drawManualRoute(startPoint: GeoPoint, endPoint: GeoPoint) {
+
+        val start = startPoint.latitude.toString() + "," + startPoint.longitude.toString()
+        val end = endPoint.latitude.toString() + "," + endPoint.longitude.toString()
+
+        Log.v("locat" , start)
+        Log.v("locat" , end)
+
+        viewModelScope.launch {
+
+            roadUsecase.getRoute(
+                    start.substring(0 , 20) , end.substring(0 , 20)
+            ).collect{
+
+                val routePoints = mutableListOf<GeoPoint>()
+                it.paths.forEach { path ->
+                    val decodedPoints = decodePolyline(path.points)
+                    routePoints.addAll(decodedPoints)
+                }
+                drawRoute(routePoints)
+            }
+
         }
 
-        return getLocation
+    }
+
+    private fun decodePolyline(encoded: String, precision: Double = 1E5): List<GeoPoint> {
+        val poly = ArrayList<GeoPoint>()
+        var index = 0
+        val len = encoded.length
+        var lat = 0
+        var lng = 0
+
+        while (index < len) {
+            var b: Int
+            var shift = 0
+            var result = 0
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lat += dlat
+
+            shift = 0
+            result = 0
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lng += dlng
+
+            val geoPoint = GeoPoint(lat / precision, lng / precision)
+            poly.add(geoPoint)
+        }
+
+        return poly
+    }
+
+    private fun drawRoute(routePoints: List<GeoPoint>) {
+        val line = Polyline()
+        line.setPoints(routePoints)
+        mMap.overlayManager.add(line)
+        mMap.invalidate()
     }
 
 }

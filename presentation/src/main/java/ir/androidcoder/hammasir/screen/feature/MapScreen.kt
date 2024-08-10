@@ -53,6 +53,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
     val context = LocalContext.current
     var hasLocationPermission by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    var userLocation = Pair(51.131, 12.414)
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -80,9 +81,9 @@ fun MapSetting(mapViewModel: MapViewModel) {
             MapView(context).also { mapView ->
                 mapViewModel.initializeMap(mapView)
                 coroutineScope.launch {
-                    val userLocation = mapViewModel.getUserLocation(context)
-                    userLocation.let {
-                        mapViewModel.centerMapAt(GeoPoint(it.first, it.second), 18.0)
+                    mapViewModel.getUserLocation(context){ lat , long ->
+                        userLocation = Pair(lat , long)
+                        mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
                     }
 
                     mapView.overlays.add(object : Overlay() {
@@ -100,6 +101,10 @@ fun MapSetting(mapViewModel: MapViewModel) {
                                     e.y.toInt()
                                 ) as GeoPoint
                                 mapViewModel.addMarkerClicked(point)
+                                mapViewModel.drawManualRoute(
+                                    GeoPoint(userLocation.first, userLocation.second),
+                                    point
+                                )
                             }
                             return true
                         }
