@@ -38,13 +38,13 @@ private fun RouteResponse.Path.Instruction.toEntity(): RouteEntity.Path.Instruct
         heading = this.heading,
         interval = this.interval,
         last_heading = this.last_heading,
-        motorway_junction = this.motorway_junction,
+        motorway_junction = this.motorway_junction ?: "",
         sign = this.sign,
-        street_destination = this.street_destination,
-        street_destination_ref = this.street_destination_ref,
-        street_name = this.street_name,
-        street_ref = this.street_ref,
-        text = this.text,
-        time = this.time,
-        turn_angle = this.turn_angle
+        street_destination = this.street_destination ?: "",
+        street_destination_ref = this.street_destination_ref ?: "",
+        street_name = this.street_name ?: "",
+        street_ref = this.street_ref ?: "",
+        text = this.text ?: "",
+        time = this.time ?: 0,
+        turn_angle = this.turn_angle ?: 0.0
     )

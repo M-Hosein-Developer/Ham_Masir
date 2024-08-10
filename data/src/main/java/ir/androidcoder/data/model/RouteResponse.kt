@@ -36,15 +36,15 @@ data class RouteResponse(
             val heading: Double,
             val interval: List<Int>,
             val last_heading: Double,
-            val motorway_junction: String,
+            val motorway_junction: String?,
             val sign: Int,
-            val street_destination: String,
-            val street_destination_ref: String,
-            val street_name: String,
-            val street_ref: String,
-            val text: String,
-            val time: Int,
-            val turn_angle: Double
+            val street_destination: String?,
+            val street_destination_ref: String?,
+            val street_name: String?,
+            val street_ref: String?,
+            val text: String?,
+            val time: Int?,
+            val turn_angle: Double?
         )
     }
 }
