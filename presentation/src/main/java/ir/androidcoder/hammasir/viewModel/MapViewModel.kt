@@ -162,7 +162,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     }
 
 
-    //---
+    //---Draw Route---------------------------------------------------------------------------------
     fun drawManualRoute(startPoint: GeoPoint, endPoint: GeoPoint) {
 
         val start = startPoint.latitude.toString() + "," + startPoint.longitude.toString()
