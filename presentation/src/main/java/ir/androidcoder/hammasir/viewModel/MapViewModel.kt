@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -43,7 +44,6 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     private lateinit var mMyLocationOverlay: MyLocationNewOverlay
     private var clickMarker: Marker? = null
     private var initialMarker: Marker? = null
-    private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
     //---Init Map-----------------------------------------------------------------------------------
     fun initializeMap(mapView: MapView) {
@@ -229,8 +229,12 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     }
 
     private fun drawRoute(routePoints: List<GeoPoint>) {
-        val line = Polyline()
-        line.setPoints(routePoints)
+
+        val line = Polyline().apply {
+            setPoints(routePoints)
+            outlinePaint.color = Color.CYAN
+            outlinePaint.strokeWidth = 16.0f
+        }
         mMap.overlayManager.add(line)
         mMap.invalidate()
     }
