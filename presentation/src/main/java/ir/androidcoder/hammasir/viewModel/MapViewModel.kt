@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.androidcoder.domain.useCase.road.RoadUsecase
 import ir.androidcoder.hammasir.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -173,9 +174,11 @@ class MapViewModel @Inject constructor(private val context: Context , private va
 
         viewModelScope.launch {
 
-            roadUsecase.getRoute(
-                    start.substring(0 , 20) , end.substring(0 , 20)
-            ).collect{
+            roadUsecase.getRoute(start , end)
+                .catch {
+                    it.localizedMessage?.let { it1 -> Log.e("ApiError" , it1) }
+                }
+                .collect{
 
                 val routePoints = mutableListOf<GeoPoint>()
                 it.paths.forEach { path ->
