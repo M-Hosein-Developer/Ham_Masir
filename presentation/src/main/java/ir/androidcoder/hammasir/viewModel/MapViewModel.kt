@@ -85,7 +85,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
             initialMarker = Marker(mMap).apply {
                 position = location
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                icon = resizeDrawable(R.drawable.now_locat, 120, 120)
+                icon = resizeDrawable(R.drawable.now_location, 120, 120)
                 mMap.overlays.add(this)
             }
         } else {
