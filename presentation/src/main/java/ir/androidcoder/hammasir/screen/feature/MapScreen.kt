@@ -34,6 +34,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.viewModel.MapViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -120,9 +121,21 @@ fun MapSetting(mapViewModel: MapViewModel) {
                                     e.x.toInt(), e.y.toInt()
                                 ) as GeoPoint
                                 mapViewModel.addMarkerClicked(point)
-                                mapViewModel.drawManualRoute(
-                                    GeoPoint(userLocation.first, userLocation.second), point
-                                )
+
+                                coroutineScope.launch {
+
+                                    while (true){
+
+                                        mapViewModel.drawManualRoute(
+                                            GeoPoint(userLocation.first, userLocation.second), point
+                                        )
+
+                                      delay(2000)
+                                    }
+
+                                }
+
+
                             }
                             return true
                         }
