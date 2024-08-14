@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -21,13 +23,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.viewModel.MapViewModel
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
@@ -35,14 +40,29 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Overlay
 
 @Composable
-fun MapScreen(mapViewModel: MapViewModel){
+fun MapScreen(mapViewModel: MapViewModel) {
+
+    val context = LocalContext.current
 
 
     Column(
         Modifier.fillMaxSize()
     ) {
 
-        MapSetting(mapViewModel)
+        Box(
+            Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
+        ) {
+
+            MapSetting(mapViewModel)
+            LocationButtonSetting {
+                mapViewModel.getUserLocation(context) { lat, long ->
+                    mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
+                }
+
+            }
+
+        }
+
 
     }
 
@@ -64,8 +84,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
     LaunchedEffect(Unit) {
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                context, Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
                 hasLocationPermission = true
             }
@@ -81,8 +100,8 @@ fun MapSetting(mapViewModel: MapViewModel) {
             MapView(context).also { mapView ->
                 mapViewModel.initializeMap(mapView)
                 coroutineScope.launch {
-                    mapViewModel.getUserLocation(context){ lat , long ->
-                        userLocation = Pair(lat , long)
+                    mapViewModel.getUserLocation(context) { lat, long ->
+                        userLocation = Pair(lat, long)
                         mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
                     }
 
@@ -92,18 +111,15 @@ fun MapSetting(mapViewModel: MapViewModel) {
                         }
 
                         override fun onSingleTapConfirmed(
-                            e: MotionEvent?,
-                            mapView: MapView?
+                            e: MotionEvent?, mapView: MapView?
                         ): Boolean {
                             e?.let {
                                 val point = mapView?.projection?.fromPixels(
-                                    e.x.toInt(),
-                                    e.y.toInt()
+                                    e.x.toInt(), e.y.toInt()
                                 ) as GeoPoint
                                 mapViewModel.addMarkerClicked(point)
                                 mapViewModel.drawManualRoute(
-                                    GeoPoint(userLocation.first, userLocation.second),
-                                    point
+                                    GeoPoint(userLocation.first, userLocation.second), point
                                 )
                             }
                             return true
@@ -129,13 +145,11 @@ fun MapSetting(mapViewModel: MapViewModel) {
                             }
 
                             override fun onSingleTapConfirmed(
-                                e: MotionEvent?,
-                                mapView: MapView?
+                                e: MotionEvent?, mapView: MapView?
                             ): Boolean {
                                 e?.let {
                                     val point = mapView?.projection?.fromPixels(
-                                        e.x.toInt(),
-                                        e.y.toInt()
+                                        e.x.toInt(), e.y.toInt()
                                     ) as GeoPoint
                                     mapViewModel.addMarkerClicked(point)
                                 }
@@ -150,7 +164,8 @@ fun MapSetting(mapViewModel: MapViewModel) {
                 text = "اجازه استفاده از موقعیت مکانی خود را برای این اپلیکیشن فعال کنید",
                 color = Color.Red,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
                     .padding(top = 16.dp)
             )
 
@@ -163,4 +178,16 @@ fun MapSetting(mapViewModel: MapViewModel) {
             mapViewModel.mMap.onDetach()
         }
     }
+}
+
+@Composable
+fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
+
+    FloatingActionButton(
+        onClick = { locationButtonSetting.invoke() },
+        modifier = Modifier.padding(end = 24.dp, bottom = 72.dp)
+    ) {
+        Icon(painter = painterResource(id = R.drawable.location), contentDescription = null)
+    }
+
 }
