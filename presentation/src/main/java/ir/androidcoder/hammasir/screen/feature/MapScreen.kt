@@ -8,12 +8,24 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -25,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -62,7 +75,7 @@ fun MapScreen(mapViewModel: MapViewModel) {
                 }
 
             }
-
+            SearchLocation()
         }
 
 
@@ -203,6 +216,64 @@ fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
         modifier = Modifier.padding(end = 24.dp, bottom = 72.dp)
     ) {
         Icon(painter = painterResource(id = R.drawable.location), contentDescription = null)
+    }
+
+}
+
+@Composable
+fun SearchLocation() {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .clip(RoundedCornerShape(topEnd = 18.dp , topStart = 18.dp))
+            .background(Color.White)
+            .padding(horizontal = 24.dp)
+        ,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Image(
+            imageVector = Icons.Outlined.AccountCircle,
+            contentDescription = null,
+            modifier = Modifier
+                .size(42.dp)
+                .padding(4.dp)
+                .clip(RoundedCornerShape(32.dp))
+                .background(Color.Gray)
+        )
+
+        IconButton(
+            onClick = { /*TODO*/ },
+            Modifier.fillMaxWidth()
+        ) {
+            Row(
+                Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "کجا میخوای بری؟",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .background(Color.Gray)
+                        .padding(end = 12.dp),
+                    textAlign = TextAlign.End,
+                    )
+
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null,
+                    modifier = Modifier.background(Color.Gray)
+                        .padding(4.dp)
+                        .size(32.dp)
+                )
+            }
+        }
+
     }
 
 }
