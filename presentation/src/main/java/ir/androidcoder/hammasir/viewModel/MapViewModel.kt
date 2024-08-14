@@ -72,7 +72,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         mMap.controller.setCenter(location)
 
         viewModelScope.launch {
-            delay(5000)
+            delay(3000)
             setInitialMarker(location)
         }
 
@@ -84,7 +84,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         if (initialMarker == null) {
             initialMarker = Marker(mMap).apply {
                 position = location
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 icon = resizeDrawable(R.drawable.now_locat, 120, 120)
                 mMap.overlays.add(this)
             }
@@ -105,6 +105,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         clickMarker?.position = point
         mMap.invalidate()
     }
+
 
     //---Icon Size----------------------------------------------------------------------------------
     private fun resizeDrawable(drawableRes: Int, width: Int, height: Int): Drawable {
@@ -145,9 +146,8 @@ class MapViewModel @Inject constructor(private val context: Context , private va
                     val longitude = it.longitude
                     callback(latitude, longitude)
                 } ?: run {
-                    // زمانی که مکان در دسترس نیست
                     Log.e("locat1", "Location is null")
-                    callback(51.131, 12.414) // مقدار پیش‌فرض
+                    callback(51.131, 12.414)
                 }
             }
         } else {
@@ -156,9 +156,8 @@ class MapViewModel @Inject constructor(private val context: Context , private va
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 1
             )
-            // زمانی که اجازه‌ دسترسی صادر نشده
             Log.e("locat1", "Permission not granted")
-            callback(51.131, 12.414) // مقدار پیش‌فرض
+            callback(51.131, 12.414)
         }
     }
 
