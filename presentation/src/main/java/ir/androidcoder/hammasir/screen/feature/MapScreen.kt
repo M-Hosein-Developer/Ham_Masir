@@ -57,6 +57,7 @@ fun MapScreen(mapViewModel: MapViewModel) {
             LocationButtonSetting {
                 mapViewModel.getUserLocation(context) { lat, long ->
                     mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
+                    mapViewModel.setInitialMarker(GeoPoint(lat, long))
                 }
 
             }
@@ -103,6 +104,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
                     mapViewModel.getUserLocation(context) { lat, long ->
                         userLocation = Pair(lat, long)
                         mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
+                        mapViewModel.setInitialMarker(GeoPoint(lat, long))
                     }
 
                     mapView.overlays.add(object : Overlay() {

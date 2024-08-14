@@ -80,7 +80,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
 
 
     //---Add Marker By Click------------------------------------------------------------------------
-    private fun setInitialMarker(location: GeoPoint) {
+    fun setInitialMarker(location: GeoPoint) {
         if (initialMarker == null) {
             initialMarker = Marker(mMap).apply {
                 position = location
