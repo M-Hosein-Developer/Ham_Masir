@@ -45,7 +45,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
 import ir.androidcoder.hammasir.R
+import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -54,7 +56,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Overlay
 
 @Composable
-fun MapScreen(mapViewModel: MapViewModel) {
+fun MapScreen(mapViewModel: MapViewModel, navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -75,7 +77,11 @@ fun MapScreen(mapViewModel: MapViewModel) {
                 }
 
             }
-            SearchLocation()
+
+            SearchLocation{
+                navController.navigate(MyScreen.SearchScreen.route)
+            }
+
         }
 
 
@@ -221,7 +227,7 @@ fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
 }
 
 @Composable
-fun SearchLocation() {
+fun SearchLocation(onSearchClicked :() -> Unit) {
 
     Row(
         modifier = Modifier
@@ -246,7 +252,7 @@ fun SearchLocation() {
         )
 
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { onSearchClicked.invoke() },
             Modifier.fillMaxWidth()
         ) {
             Row(
