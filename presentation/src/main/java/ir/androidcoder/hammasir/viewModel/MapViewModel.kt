@@ -87,11 +87,12 @@ class MapViewModel @Inject constructor(private val context: Context , private va
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 icon = resizeDrawable(R.drawable.now_location, 120, 120)
                 mMap.overlays.add(this)
+                mMap.invalidate()
             }
         } else {
             initialMarker?.position = location
+            mMap.invalidate()
         }
-        mMap.invalidate()
     }
 
     fun addMarkerClicked(point: GeoPoint) {
