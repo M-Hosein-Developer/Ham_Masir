@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -41,11 +45,17 @@ fun MyScreen(mapViewModel: MapViewModel) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = MyScreen.MapScreen.route) {
 
-        composable(MyScreen.MapScreen.route){
+        composable(
+            route = MyScreen.MapScreen.route,
+            enterTransition = { slideInHorizontally(initialOffsetX = { 500 }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -500 }) + fadeOut() },
+            ){
             MapScreen(mapViewModel , navController)
         }
 
-        composable(MyScreen.SearchScreen.route){
+        composable(
+            route = MyScreen.SearchScreen.route,
+            ){
             SearchScreen()
         }
 

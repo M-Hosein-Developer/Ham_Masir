@@ -75,6 +75,7 @@ dependencies {
 
     //Navigation Component
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.navigation.animation)
 
     //Coil
     implementation(libs.coil.compose)
