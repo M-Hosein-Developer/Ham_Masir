@@ -149,6 +149,8 @@ fun MapSetting(mapViewModel: MapViewModel) {
                                             GeoPoint(userLocation.first, userLocation.second), point
                                         )
 
+                                        mapViewModel.setInitialMarker(GeoPoint(userLocation.first, userLocation.second))
+
                                       delay(2000)
                                     }
 
