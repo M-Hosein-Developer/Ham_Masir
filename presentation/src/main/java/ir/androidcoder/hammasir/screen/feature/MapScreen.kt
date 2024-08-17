@@ -148,8 +148,9 @@ fun MapSetting(mapViewModel: MapViewModel) {
                                         mapViewModel.drawManualRoute(
                                             GeoPoint(userLocation.first, userLocation.second), point
                                         )
-
                                         mapViewModel.setInitialMarker(GeoPoint(userLocation.first, userLocation.second))
+                                        mapViewModel.setInitialMarker(GeoPoint(userLocation.first, userLocation.second))
+
 
                                       delay(2000)
                                     }
