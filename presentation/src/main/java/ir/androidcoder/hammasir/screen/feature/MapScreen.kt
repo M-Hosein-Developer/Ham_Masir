@@ -10,15 +10,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -27,6 +30,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -222,7 +226,7 @@ fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
 
     FloatingActionButton(
         onClick = { locationButtonSetting.invoke() },
-        modifier = Modifier.padding(end = 24.dp, bottom = 72.dp)
+        modifier = Modifier.padding(end = 24.dp, bottom = 82.dp)
     ) {
         Icon(painter = painterResource(id = R.drawable.location), contentDescription = null)
     }
@@ -235,7 +239,7 @@ fun SearchLocation(onSearchClicked :() -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(72.dp)
             .clip(RoundedCornerShape(topEnd = 18.dp , topStart = 18.dp))
             .background(Color.White)
             .padding(horizontal = 24.dp)
@@ -248,39 +252,28 @@ fun SearchLocation(onSearchClicked :() -> Unit) {
             imageVector = Icons.Outlined.AccountCircle,
             contentDescription = null,
             modifier = Modifier
-                .size(42.dp)
+                .size(52.dp)
                 .padding(4.dp)
                 .clip(RoundedCornerShape(32.dp))
-                .background(Color.Gray)
         )
 
-        IconButton(
+        TextButton(
             onClick = { onSearchClicked.invoke() },
-            Modifier.fillMaxWidth()
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .padding(vertical = 14.dp)
+                .border(1.dp, Color.Gray, RoundedCornerShape(32.dp))
+                .fillMaxWidth(),
         ) {
-            Row(
-                Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "کجا میخوای بری؟",
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .background(Color.Gray)
-                        .padding(end = 12.dp),
-                    textAlign = TextAlign.End,
-                    )
-
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null,
-                    modifier = Modifier.background(Color.Gray)
-                        .padding(4.dp)
-                        .size(32.dp)
-                )
-            }
+            Text(
+                text = "کجا میخوای بری؟" ,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f) ,
+                textAlign = TextAlign.End
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
         }
 
     }
