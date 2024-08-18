@@ -1,11 +1,17 @@
 package ir.androidcoder.hammasir.screen.feature
 
+import android.inputmethodservice.Keyboard.Row
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,7 +55,8 @@ fun SearchScreen(navController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
+
     ) {
 
         SearchTextField(
@@ -62,9 +69,9 @@ fun SearchScreen(navController: NavHostController) {
             }
         )
 
-
         Column(
-            Modifier.fillMaxSize()
+            Modifier
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
 
@@ -81,7 +88,28 @@ fun SearchScreen(navController: NavHostController) {
 
             }
 
-            ImportantLocation()
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            )
+
+            ImportantLocation(
+                {
+
+                },
+                {
+
+                }
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            )
 
         }
 
@@ -114,7 +142,9 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick:
                     .padding(end = 8.dp)
             )
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         textStyle = TextStyle(
             textAlign = TextAlign.End
         ),
@@ -127,7 +157,9 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick:
 fun LocationByCategory(categories: List<Category>, onItemClicked: (String) -> Unit) {
 
     LazyRow(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         verticalAlignment = CenterVertically,
         reverseLayout = true
     ) {
@@ -156,8 +188,41 @@ fun LocationByCategoryItem(category: Category, onItemClicked: (String) -> Unit) 
 }
 
 @Composable
-fun ImportantLocation() {
+fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = CenterVertically,
+    ){
+
+        TextButton(
+            onClick = { onWorkClicked.invoke() },
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+        ) {
+            Text(text = "محل کار")
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(painter = painterResource(id = R.drawable.work), contentDescription = null)
+        }
+
+        Spacer(modifier = Modifier.background(Color.LightGray).width(2.dp).fillMaxHeight().padding(24.dp))
+
+        TextButton(
+            onClick = { onHomeClicked.invoke() },
+            modifier = Modifier
+                .padding(horizontal = 4.dp),
+        ) {
+            Text(text = "خانه")
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(painter = painterResource(id = R.drawable.home), contentDescription = null)
+        }
+
+
+    }
 
 }
 
