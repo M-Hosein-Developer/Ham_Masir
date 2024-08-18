@@ -10,15 +10,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun SearchScreen(){
+fun SearchScreen(navController: NavHostController) {
+
+    var searchText by remember { mutableStateOf("") }
 
     Column(
         Modifier
@@ -27,12 +34,12 @@ fun SearchScreen(){
     ) {
 
         SearchTextField(
-            "در نقشه جسجتو کن",
+            searchText,
             {
-
+                searchText = it
             },
             {
-
+                navController.popBackStack()
             }
         )
 
@@ -47,6 +54,7 @@ fun SearchScreen(){
 fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick: () -> Unit) {
 
     OutlinedTextField(
+        label = { Text("در نقشه جستجو کن") },
         value = value,
         onValueChange = { onValueChange.invoke(it) },
         trailingIcon = {

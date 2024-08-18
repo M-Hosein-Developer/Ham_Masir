@@ -56,7 +56,7 @@ fun MyScreen(mapViewModel: MapViewModel) {
         composable(
             route = MyScreen.SearchScreen.route,
             ){
-            SearchScreen()
+            SearchScreen(navController)
         }
 
     }
