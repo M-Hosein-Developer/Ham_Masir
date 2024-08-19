@@ -1,6 +1,9 @@
-package ir.androidcoder.data.model
+package ir.androidcoder.data.local.entities
 
-data class SearchResponse(
+import androidx.room.Entity
+
+@Entity
+data class SearchEntity(
 
     val name : String,
     val address : String,

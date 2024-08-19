@@ -90,14 +90,6 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.fragment)
 
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
-
-    //Room
-    implementation (libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
 
     //Lottie
     implementation(libs.lottie.compose)
