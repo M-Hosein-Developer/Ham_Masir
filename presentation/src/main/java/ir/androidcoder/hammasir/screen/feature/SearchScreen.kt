@@ -34,8 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
@@ -110,6 +112,8 @@ fun SearchScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .background(Color.LightGray)
             )
+
+            SearchResult()
 
         }
 
@@ -209,7 +213,11 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
             Icon(painter = painterResource(id = R.drawable.work), contentDescription = null)
         }
 
-        Spacer(modifier = Modifier.background(Color.LightGray).width(2.dp).fillMaxHeight().padding(24.dp))
+        Spacer(modifier = Modifier
+            .background(Color.LightGray)
+            .width(2.dp)
+            .fillMaxHeight()
+            .padding(24.dp))
 
         TextButton(
             onClick = { onHomeClicked.invoke() },
@@ -221,6 +229,50 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
             Icon(painter = painterResource(id = R.drawable.home), contentDescription = null)
         }
 
+
+    }
+
+}
+
+@Composable
+fun SearchResult(){
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 6.dp)
+    ) {
+
+        Text(
+            text = "دماوند",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            style = TextStyle(
+                textAlign = TextAlign.End,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Text(
+            text = "خیابان دماوند",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .padding(bottom = 8.dp),
+            style = TextStyle(
+                textAlign = TextAlign.End,
+                )
+        )
+
+        Spacer(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .background(Color.LightGray)
+        )
 
     }
 
