@@ -81,6 +81,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
