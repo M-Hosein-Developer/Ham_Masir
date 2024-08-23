@@ -28,7 +28,6 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -53,6 +52,7 @@ import androidx.navigation.NavHostController
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
+import ir.androidcoder.hammasir.viewModel.SearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
@@ -60,7 +60,11 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Overlay
 
 @Composable
-fun MapScreen(mapViewModel: MapViewModel, navController: NavHostController) {
+fun MapScreen(
+    mapViewModel: MapViewModel,
+    navController: NavHostController,
+    searchViewModel: SearchViewModel
+) {
 
     val context = LocalContext.current
 

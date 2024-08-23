@@ -1,6 +1,5 @@
 package ir.androidcoder.hammasir.screen.feature
 
-import android.inputmethodservice.Keyboard.Row
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,9 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
+import ir.androidcoder.hammasir.viewModel.SearchViewModel
 
 @Composable
-fun SearchScreen(navController: NavHostController) {
+fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewModel) {
 
     var searchText by remember { mutableStateOf("") }
 

@@ -21,18 +21,20 @@ import ir.androidcoder.hammasir.screen.feature.SearchScreen
 import ir.androidcoder.hammasir.screen.ui.theme.HamMasirTheme
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
+import ir.androidcoder.hammasir.viewModel.SearchViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mapViewModel : MapViewModel by viewModels()
+    private val searchViewModel : SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             HamMasirTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MyScreen(mapViewModel)
+                    MyScreen(mapViewModel , searchViewModel)
                 }
             }
         }
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyScreen(mapViewModel: MapViewModel) {
+fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = MyScreen.MapScreen.route) {
@@ -50,13 +52,13 @@ fun MyScreen(mapViewModel: MapViewModel) {
             enterTransition = { slideInHorizontally(initialOffsetX = { 500 }) + fadeIn() },
             exitTransition = { slideOutHorizontally(targetOffsetX = { -500 }) + fadeOut() },
             ){
-            MapScreen(mapViewModel , navController)
+            MapScreen(mapViewModel , navController , searchViewModel)
         }
 
         composable(
             route = MyScreen.SearchScreen.route,
             ){
-            SearchScreen(navController)
+            SearchScreen(navController , searchViewModel)
         }
 
     }
