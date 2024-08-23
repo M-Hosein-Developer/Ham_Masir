@@ -209,7 +209,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp)
+                    .padding(top = 42.dp)
             )
 
         }
