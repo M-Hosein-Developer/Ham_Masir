@@ -140,13 +140,13 @@ fun MapSetting(mapViewModel: MapViewModel) {
 
                         }
 
-                        override fun onSingleTapConfirmed(
-                            e: MotionEvent?, mapView: MapView?
-                        ): Boolean {
+                        override fun onSingleTapConfirmed(e: MotionEvent?, mapView: MapView?): Boolean {
+
                             e?.let {
                                 val point = mapView?.projection?.fromPixels(
                                     e.x.toInt(), e.y.toInt()
                                 ) as GeoPoint
+
                                 mapViewModel.addMarkerClicked(point)
 
                                 coroutineScope.launch {
@@ -156,9 +156,6 @@ fun MapSetting(mapViewModel: MapViewModel) {
                                         mapViewModel.drawManualRoute(
                                             GeoPoint(userLocation.first, userLocation.second), point
                                         )
-                                        mapViewModel.setInitialMarker(GeoPoint(userLocation.first, userLocation.second))
-                                        mapViewModel.setInitialMarker(GeoPoint(userLocation.first, userLocation.second))
-
 
                                       delay(2000)
                                     }

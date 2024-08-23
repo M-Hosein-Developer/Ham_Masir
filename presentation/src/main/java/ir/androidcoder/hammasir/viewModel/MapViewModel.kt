@@ -18,7 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.androidcoder.domain.useCase.road.RoadUsecase
@@ -146,6 +145,12 @@ class MapViewModel @Inject constructor(private val context: Context , private va
                     val latitude = it.latitude
                     val longitude = it.longitude
                     callback(latitude, longitude)
+                    viewModelScope.launch {
+                        while (true) {
+                            setInitialMarker(GeoPoint(latitude, longitude))
+                            delay(4000)
+                        }
+                    }
                 } ?: run {
                     Log.e("locat1", "Location is null")
                     callback(51.131, 12.414)
