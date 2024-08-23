@@ -166,6 +166,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
                             }
                             return true
                         }
+
                     })
                 }
             }
@@ -227,7 +228,7 @@ fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
 
     FloatingActionButton(
         onClick = { locationButtonSetting.invoke() },
-        modifier = Modifier.padding(end = 24.dp, bottom = 82.dp)
+        modifier = Modifier.padding(end = 24.dp, bottom = 130.dp)
     ) {
         Icon(painter = painterResource(id = R.drawable.location), contentDescription = null)
     }
@@ -240,10 +241,11 @@ fun SearchLocation(onSearchClicked :() -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(110.dp)
             .clip(RoundedCornerShape(topEnd = 18.dp , topStart = 18.dp))
             .background(Color.White)
             .padding(horizontal = 24.dp)
+            .padding(bottom = 32.dp)
         ,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
