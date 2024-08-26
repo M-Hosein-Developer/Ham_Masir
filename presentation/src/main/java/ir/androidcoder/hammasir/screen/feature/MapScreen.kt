@@ -26,6 +26,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import ir.androidcoder.domain.entities.HomeEntity
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
@@ -77,7 +80,7 @@ fun MapScreen(
             Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
         ) {
 
-            MapSetting(mapViewModel)
+            MapSetting(mapViewModel, searchViewModel)
             LocationButtonSetting {
                 mapViewModel.getUserLocation(context) { lat, long ->
                     mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
@@ -98,12 +101,18 @@ fun MapScreen(
 }
 
 @Composable
-fun MapSetting(mapViewModel: MapViewModel) {
+fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
+
+    //variables
     val context = LocalContext.current
     var hasLocationPermission by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     var userLocation = Pair(51.131, 12.414)
+    val dialog = remember { mutableStateOf(false) }
+    val homeAndWorkPoint = remember { mutableStateOf<GeoPoint>(GeoPoint(51.131, 12.414)) }
 
+
+    //permission
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -124,6 +133,7 @@ fun MapSetting(mapViewModel: MapViewModel) {
         }
     }
 
+    //map
     if (hasLocationPermission) {
         AndroidView(factory = { context ->
             MapView(context).also { mapView ->
@@ -166,6 +176,23 @@ fun MapSetting(mapViewModel: MapViewModel) {
                             }
                             return true
                         }
+
+                        override fun onLongPress(e: MotionEvent?, mapView: MapView?): Boolean {
+
+                            e?.let {
+                                val point = mapView?.projection?.fromPixels(
+                                    e.x.toInt(), e.y.toInt()
+                                ) as GeoPoint
+
+                                dialog.value = true
+                                homeAndWorkPoint.value = point
+
+                            }
+
+
+                            return super.onLongPress(e, mapView)
+                        }
+
 
                     })
                 }
@@ -216,6 +243,27 @@ fun MapSetting(mapViewModel: MapViewModel) {
 
     }
 
+    //dialog
+    AlertDialogLocation(
+        openDialog = dialog.value,
+        onHomeClicked = {
+            searchViewModel.insertHomeLocation(
+                HomeEntity(
+                    0,
+                    homeAndWorkPoint.value.latitude,
+                    homeAndWorkPoint.value.longitude,
+                    "خانه",
+                    "",
+                    ""
+                )
+            )
+            mapViewModel.addHomeMarkerClicked(homeAndWorkPoint.value)
+            dialog.value = it
+        },
+        onWorkClicked ={ dialog.value = it },
+        dismiss = { dialog.value = it }
+    )
+
     DisposableEffect(Unit) {
         onDispose {
             mapViewModel.mMap.onDetach()
@@ -242,7 +290,7 @@ fun SearchLocation(onSearchClicked :() -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .clip(RoundedCornerShape(topEnd = 18.dp , topStart = 18.dp))
+            .clip(RoundedCornerShape(topEnd = 18.dp, topStart = 18.dp))
             .background(Color.White)
             .padding(horizontal = 24.dp)
             .padding(bottom = 32.dp)
@@ -281,4 +329,67 @@ fun SearchLocation(onSearchClicked :() -> Unit) {
 
     }
 
+}
+
+@Composable
+fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, onWorkClicked: (Boolean) -> Unit , dismiss: (Boolean) -> Unit) {
+
+
+    if (openDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                dismiss.invoke(false)
+            },
+            title = {
+                Text(
+                    text = "انتخاب مکان جدید",
+                    Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End
+                )
+            },
+            text = {
+                Text(
+                    "مکانی که انتخاب کردی برای خونست یا محل کارت؟",
+                    Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End
+                )
+            },
+            confirmButton = {
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Button(
+                        onClick = {
+                            onWorkClicked.invoke(false)
+                        },
+                        Modifier.fillMaxWidth().weight(0.5f).padding(4.dp)
+                    ) {
+                        Text("محل کار")
+                    }
+
+                    Button(
+                        onClick = {
+                            onHomeClicked.invoke(false)
+                        },
+                        Modifier.fillMaxWidth().weight(0.5f).padding(4.dp)
+                        ) {
+                        Text("خونه")
+                    }
+                }
+            },
+//            dismissButton = {
+//                Button(
+//
+//                    onClick = {
+//                        openDialog.value = false
+//                    }) {
+//                    Text("Dismiss Button")
+//                }
+//            }
+        )
+    }
 }
