@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ir.androidcoder.data.local.entities.HomeEntity
 import ir.androidcoder.data.local.entities.SearchEntity
+import ir.androidcoder.data.local.entities.WorkEntity
 
 @Dao
 interface MyDao {
@@ -23,6 +24,13 @@ interface MyDao {
 
     @Query("SELECT * FROM HomeEntity")
     suspend fun getHomeItems(): HomeEntity
+
+    //Work
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWorkItem(myWork : WorkEntity)
+
+    @Query("SELECT * FROM WorkEntity")
+    suspend fun getWorkItem() : WorkEntity
 
 
 
