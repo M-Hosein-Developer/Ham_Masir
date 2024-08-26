@@ -5,6 +5,7 @@ package ir.androidcoder.hammasir.screen.feature
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Canvas
+import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +53,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import ir.androidcoder.domain.entities.HomeEntity
+import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
@@ -260,7 +262,19 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
             mapViewModel.addHomeMarkerClicked(homeAndWorkPoint.value)
             dialog.value = it
         },
-        onWorkClicked ={ dialog.value = it },
+        onWorkClicked = {
+            searchViewModel.insertWorkLocation(
+                WorkEntity(
+                    0,
+                    homeAndWorkPoint.value.latitude,
+                    homeAndWorkPoint.value.longitude,
+                    "محل کار",
+                    "",
+                    ""
+                )
+            )
+            dialog.value = it
+        },
         dismiss = { dialog.value = it }
     )
 
@@ -366,7 +380,10 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
                         onClick = {
                             onWorkClicked.invoke(false)
                         },
-                        Modifier.fillMaxWidth().weight(0.5f).padding(4.dp)
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(0.5f)
+                            .padding(4.dp)
                     ) {
                         Text("محل کار")
                     }
@@ -375,7 +392,10 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
                         onClick = {
                             onHomeClicked.invoke(false)
                         },
-                        Modifier.fillMaxWidth().weight(0.5f).padding(4.dp)
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(0.5f)
+                            .padding(4.dp)
                         ) {
                         Text("خونه")
                     }
