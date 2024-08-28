@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
+import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.SearchViewModel
 
 @Composable
@@ -98,11 +99,17 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
             )
 
             ImportantLocation(
-                {
-
+                onHomeClicked = {
+                    searchViewModel.getHomeLocation()
+                    val result = searchViewModel.homeLocation.value
+                    if (result != null)
+                    navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
                 },
-                {
-
+                onWorkClicked = {
+                    searchViewModel.getWorkLocation()
+                    val result = searchViewModel.workLocation.value
+                    if (result != null)
+                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
                 }
             )
 
