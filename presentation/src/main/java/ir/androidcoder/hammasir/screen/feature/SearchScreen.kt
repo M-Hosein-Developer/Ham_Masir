@@ -57,7 +57,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
     Column(
         Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp)
+            .padding(top = 42.dp , bottom = 32.dp)
 
     ) {
 
@@ -92,7 +92,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
             Spacer(
                 modifier = Modifier
-                    .height(8.dp)
+                    .height(4.dp)
                     .fillMaxWidth()
                     .background(Color.LightGray)
             )
@@ -108,7 +108,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
             Spacer(
                 modifier = Modifier
-                    .height(8.dp)
+                    .height(4.dp)
                     .fillMaxWidth()
                     .background(Color.LightGray)
             )
