@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import ir.androidcoder.hammasir.screen.feature.MapScreen
 import ir.androidcoder.hammasir.screen.feature.SearchScreen
@@ -47,14 +49,15 @@ class MainActivity : ComponentActivity() {
 fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = MyScreen.MapScreen.route) {
+    NavHost(navController = navController, startDestination = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}") {
 
         composable(
-            route = MyScreen.MapScreen.route,
+            route = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}",
+            arguments = listOf(navArgument("latLocation") {type = NavType.StringType} , navArgument("longLocation") {type = NavType.StringType} ),
             enterTransition = { slideInHorizontally(initialOffsetX = { 500 }) + fadeIn() },
             exitTransition = { slideOutHorizontally(targetOffsetX = { -500 }) + fadeOut() },
             ){
-            MapScreen(mapViewModel , navController , searchViewModel)
+            MapScreen(mapViewModel , navController , searchViewModel , it.arguments?.getString("latLocation") , it .arguments?.getString("longLocation"))
         }
 
         composable(

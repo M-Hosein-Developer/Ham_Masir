@@ -5,7 +5,6 @@ package ir.androidcoder.hammasir.screen.feature
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Canvas
-import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,8 +67,11 @@ import org.osmdroid.views.overlay.Overlay
 fun MapScreen(
     mapViewModel: MapViewModel,
     navController: NavHostController,
-    searchViewModel: SearchViewModel
-) {
+    searchViewModel: SearchViewModel,
+    lat: String?,
+    long: String?,
+
+    ) {
 
     val context = LocalContext.current
 
