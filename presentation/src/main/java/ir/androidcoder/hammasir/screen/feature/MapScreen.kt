@@ -84,7 +84,7 @@ fun MapScreen(
             Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
         ) {
 
-            MapSetting(mapViewModel, searchViewModel)
+            MapSetting(mapViewModel, searchViewModel , GeoPoint(lat?.toDouble() ?: 0.0 , long?.toDouble() ?: 0.0))
             LocationButtonSetting {
                 mapViewModel.getUserLocation(context) { lat, long ->
                     mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
@@ -105,7 +105,7 @@ fun MapScreen(
 }
 
 @Composable
-fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
+fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, homeWorkPoint: GeoPoint) {
 
     //variables
     val context = LocalContext.current
@@ -145,9 +145,17 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
                 coroutineScope.launch {
                     mapViewModel.getUserLocation(context) { lat, long ->
                         userLocation = Pair(lat, long)
-                        mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
+
+                        if (homeWorkPoint.latitude == 0.0)
+                            mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
+                        else
+                            mapViewModel.centerMapAt(homeWorkPoint, 18.0)
+
                         mapViewModel.setInitialMarker(GeoPoint(lat, long))
+
+                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation)
                     }
+
 
                     mapView.overlays.add(object : Overlay() {
                         override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {
@@ -198,7 +206,9 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
                         }
 
 
+
                     })
+
                 }
             }
         }, modifier = Modifier.fillMaxSize())
@@ -286,6 +296,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel) {
         }
     }
 }
+
 
 @Composable
 fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
@@ -414,4 +425,22 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
 //            }
         )
     }
+}
+
+fun homeWorkLocation(
+    homeWorkPoint: GeoPoint,
+    mapViewModel: MapViewModel,
+    userLocation: Pair<Double, Double>
+) {
+
+    if (homeWorkPoint.latitude != 0.0){
+
+        mapViewModel.addHomeMarkerClicked(homeWorkPoint)
+
+        mapViewModel.drawManualRoute(
+            GeoPoint(userLocation.first, userLocation.second), GeoPoint(homeWorkPoint.latitude , homeWorkPoint.longitude)
+        )
+
+    }
+
 }
