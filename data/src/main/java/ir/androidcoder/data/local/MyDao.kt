@@ -23,14 +23,14 @@ interface MyDao {
     suspend fun insertHomeItem(myEntity: HomeEntity)
 
     @Query("SELECT * FROM HomeEntity")
-    suspend fun getHomeItems(): HomeEntity
+    suspend fun getHomeItems(): HomeEntity?
 
     //Work
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkItem(myWork : WorkEntity)
 
     @Query("SELECT * FROM WorkEntity")
-    suspend fun getWorkItem() : WorkEntity
+    suspend fun getWorkItem() : WorkEntity?
 
 
 

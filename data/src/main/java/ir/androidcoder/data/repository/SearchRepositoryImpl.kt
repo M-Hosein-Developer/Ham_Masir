@@ -14,12 +14,12 @@ class SearchRepositoryImpl(private val dao: MyDao) : SearchRepository {
     //Home Location
     override suspend fun insertHomeLocation(homeLocation: HomeEntity) = dao.insertHomeItem(homeLocation.toHomeData())
 
-    override suspend fun getHomeLocation(): HomeEntity = dao.getHomeItems().toHomeDomain()
+    override suspend fun getHomeLocation(): HomeEntity = dao.getHomeItems()?.toHomeDomain() ?: HomeEntity(0 , 0.0 , 0.0 , "" , "" , "")
 
     //Work Location
     override suspend fun insertWorkLocation(workLocation: WorkEntity) = dao.insertWorkItem(workLocation.toWorkData())
 
-    override suspend fun getWorkLocation(): WorkEntity = dao.getWorkItem().toWorkDomain()
+    override suspend fun getWorkLocation(): WorkEntity = dao.getWorkItem()?.toWorkDomain() ?: WorkEntity(0 , 0.0 , 0.0 , "" , "" , "")
 
 
 }
