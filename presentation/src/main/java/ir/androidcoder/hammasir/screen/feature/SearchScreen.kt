@@ -47,6 +47,8 @@ import ir.androidcoder.hammasir.viewModel.SearchViewModel
 fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewModel) {
 
     var searchText by remember { mutableStateOf("") }
+    searchViewModel.getHomeLocation()
+    searchViewModel.getWorkLocation()
 
     val categories = listOf(
         Category("پمپ بنزین", R.drawable.gas_station),
@@ -100,13 +102,11 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
             ImportantLocation(
                 onHomeClicked = {
-                    searchViewModel.getHomeLocation()
                     val result = searchViewModel.homeLocation.value
                     if (result != null)
                     navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
                 },
                 onWorkClicked = {
-                    searchViewModel.getWorkLocation()
                     val result = searchViewModel.workLocation.value
                     if (result != null)
                         navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
