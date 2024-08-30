@@ -28,10 +28,13 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -48,6 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -96,6 +100,7 @@ fun MapScreen(
             SearchLocation{
                 navController.navigate(MyScreen.SearchScreen.route)
             }
+
 
         }
 
@@ -441,6 +446,73 @@ fun homeWorkLocation(
             GeoPoint(userLocation.first, userLocation.second), GeoPoint(homeWorkPoint.latitude , homeWorkPoint.longitude)
         )
 
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheet(name: String , showBottomSheet : Boolean , onShowBottomSheet :(Boolean) -> Unit) {
+
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onShowBottomSheet.invoke(false)
+            },
+            sheetState = sheetState
+        ) {
+
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+
+                Text(
+                    text = name,
+                    textAlign = TextAlign.End,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+
+                )
+
+                Text(
+                    text = name,
+                    textAlign = TextAlign.End,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding()
+                )
+
+
+                Button(
+                    onClick = {
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                onShowBottomSheet.invoke(false)
+//                            }
+//                        }
+
+
+                    },
+                    Modifier
+                        .padding(vertical = 16.dp)
+
+                ) {
+                    Text("بزن بریم")
+                    Icon(painter = painterResource(R.drawable.routing_button) , contentDescription = null)
+                }
+
+            }
+
+
+
+        }
     }
 
 }
