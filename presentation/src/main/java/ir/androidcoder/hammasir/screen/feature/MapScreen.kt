@@ -5,6 +5,7 @@ package ir.androidcoder.hammasir.screen.feature
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Canvas
+import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -116,9 +117,11 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
     val context = LocalContext.current
     var hasLocationPermission by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    var userLocation = Pair(51.131, 12.414)
+    var userLocation = remember { mutableStateOf(Pair(51.131, 12.414)) }
     val dialog = remember { mutableStateOf(false) }
-    val homeAndWorkPoint = remember { mutableStateOf<GeoPoint>(GeoPoint(51.131, 12.414)) }
+    val homeAndWorkPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
+    val showBottomSheet = remember { mutableStateOf(false) }
+    val onSingleTapPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
 
 
     //permission
@@ -149,7 +152,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
                 mapViewModel.initializeMap(mapView)
                 coroutineScope.launch {
                     mapViewModel.getUserLocation(context) { lat, long ->
-                        userLocation = Pair(lat, long)
+                        userLocation.value = Pair(lat, long)
 
                         if (homeWorkPoint.latitude == 0.0)
                             mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
@@ -158,7 +161,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
 
                         mapViewModel.setInitialMarker(GeoPoint(lat, long))
 
-                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation)
+                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation.value)
                     }
 
 
@@ -174,21 +177,8 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
                                     e.x.toInt(), e.y.toInt()
                                 ) as GeoPoint
 
-                                mapViewModel.addMarkerClicked(point)
-
-                                coroutineScope.launch {
-
-                                    while (true){
-
-                                        mapViewModel.drawManualRoute(
-                                            GeoPoint(userLocation.first, userLocation.second), point
-                                        )
-
-                                      delay(2000)
-                                    }
-
-                                }
-
+                                onSingleTapPoint.value = point
+                                showBottomSheet.value = true
 
                             }
                             return true
@@ -294,6 +284,34 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
         },
         dismiss = { dialog.value = it }
     )
+
+    //BottomSheet
+    BottomSheet(
+        name = "",
+        showBottomSheet = showBottomSheet.value,
+        onShowBottomSheet = { showBottomSheet.value = it }) {
+
+        mapViewModel.addMarkerClicked(onSingleTapPoint.value)
+
+        coroutineScope.launch {
+
+            while (true) {
+
+                Log.v("TestPoint" , GeoPoint(userLocation.value.first, userLocation.value.second).toString())
+
+                    mapViewModel.drawManualRoute(
+                        GeoPoint(userLocation.value.first, userLocation.value.second),
+                        onSingleTapPoint.value
+                    )
+
+                delay(2000)
+            }
+
+        }
+
+        showBottomSheet.value = false
+
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -432,27 +450,14 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
     }
 }
 
-fun homeWorkLocation(
-    homeWorkPoint: GeoPoint,
-    mapViewModel: MapViewModel,
-    userLocation: Pair<Double, Double>
-) {
-
-    if (homeWorkPoint.latitude != 0.0){
-
-        mapViewModel.addHomeMarkerClicked(homeWorkPoint)
-
-        mapViewModel.drawManualRoute(
-            GeoPoint(userLocation.first, userLocation.second), GeoPoint(homeWorkPoint.latitude , homeWorkPoint.longitude)
-        )
-
-    }
-
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(name: String , showBottomSheet : Boolean , onShowBottomSheet :(Boolean) -> Unit) {
+fun BottomSheet(
+    name: String,
+    showBottomSheet: Boolean,
+    onShowBottomSheet: (Boolean) -> Unit,
+    onRoutingClicked: () -> Unit
+) {
 
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -498,6 +503,7 @@ fun BottomSheet(name: String , showBottomSheet : Boolean , onShowBottomSheet :(B
 //                            }
 //                        }
 
+                        onRoutingClicked.invoke()
 
                     },
                     Modifier
@@ -513,6 +519,26 @@ fun BottomSheet(name: String , showBottomSheet : Boolean , onShowBottomSheet :(B
 
 
         }
+    }
+
+}
+
+//--------------------------------------------------------------------------------------------------
+fun homeWorkLocation(
+    homeWorkPoint: GeoPoint,
+    mapViewModel: MapViewModel,
+    userLocation: Pair<Double, Double>
+) {
+
+    if (homeWorkPoint.latitude != 0.0) {
+
+        mapViewModel.addHomeMarkerClicked(homeWorkPoint)
+
+        mapViewModel.drawManualRoute(
+            GeoPoint(userLocation.first, userLocation.second),
+            GeoPoint(homeWorkPoint.latitude, homeWorkPoint.longitude)
+        )
+
     }
 
 }
