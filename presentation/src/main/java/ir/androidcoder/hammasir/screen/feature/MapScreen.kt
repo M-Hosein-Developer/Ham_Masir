@@ -60,6 +60,7 @@ import ir.androidcoder.domain.entities.HomeEntity
 import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.MyScreen
+import ir.androidcoder.hammasir.util.locationDataEmpty
 import ir.androidcoder.hammasir.viewModel.MapViewModel
 import ir.androidcoder.hammasir.viewModel.SearchViewModel
 import kotlinx.coroutines.delay
@@ -122,6 +123,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
     val homeAndWorkPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
     val showBottomSheet = remember { mutableStateOf(false) }
     val onSingleTapPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
+    val locationData = remember { mutableStateOf(locationDataEmpty.value) }
 
 
     //permission
@@ -176,6 +178,17 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
                                 val point = mapView?.projection?.fromPixels(
                                     e.x.toInt(), e.y.toInt()
                                 ) as GeoPoint
+
+                                mapViewModel.getLocationData(
+                                GeoPoint(userLocation.value.first, userLocation.value.second),
+                                onSingleTapPoint.value
+                                )
+
+                                coroutineScope.launch {
+                                    mapViewModel.locationData.collect{
+                                        locationData.value = it ?: locationDataEmpty.value
+                                    }
+                                }
 
                                 onSingleTapPoint.value = point
                                 showBottomSheet.value = true
@@ -287,7 +300,14 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
 
     //BottomSheet
     BottomSheet(
-        name = "",
+        streetName = if (
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name != null ||
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name != ""
+            )
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name
+        else
+            "نامی یافت نشد",
+        distance = locationData.value.paths[0].distance.toString(),
         showBottomSheet = showBottomSheet.value,
         onShowBottomSheet = { showBottomSheet.value = it }) {
 
@@ -453,7 +473,8 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
-    name: String,
+    streetName: String,
+    distance: String,
     showBottomSheet: Boolean,
     onShowBottomSheet: (Boolean) -> Unit,
     onRoutingClicked: () -> Unit
@@ -478,7 +499,7 @@ fun BottomSheet(
             ) {
 
                 Text(
-                    text = name,
+                    text = streetName,
                     textAlign = TextAlign.End,
                     fontSize = 18.sp,
                     modifier = Modifier
@@ -487,7 +508,7 @@ fun BottomSheet(
                 )
 
                 Text(
-                    text = name,
+                    text = distance,
                     textAlign = TextAlign.End,
                     fontSize = 12.sp,
                     modifier = Modifier
