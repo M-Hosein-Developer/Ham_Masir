@@ -20,9 +20,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.androidcoder.domain.entities.RouteEntity
 import ir.androidcoder.domain.useCase.road.RoadUsecase
 import ir.androidcoder.hammasir.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
@@ -44,6 +47,11 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     private var clickMarker: Marker? = null
     private var HomeMarker: Marker? = null
     private var initialMarker: Marker? = null
+
+    //---Location Data------------------------------------------------------------------------------
+    private val _locationData = MutableStateFlow<RouteEntity?>(null)
+    val locationData : StateFlow<RouteEntity?> get() = _locationData
+    
 
     //---Init Map-----------------------------------------------------------------------------------
     fun initializeMap(mapView: MapView) {
@@ -255,6 +263,23 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         }
         mMap.overlayManager.add(line)
         mMap.invalidate()
+    }
+
+    fun getLocationData(startPoint: GeoPoint, endPoint: GeoPoint) = viewModelScope.launch {
+
+        val start = startPoint.latitude.toString() + "," + startPoint.longitude.toString()
+        val end = endPoint.latitude.toString() + "," + endPoint.longitude.toString()
+
+        roadUsecase.getRoute(start , end)
+            .catch {
+                it.localizedMessage?.let { it1 -> Log.e("ApiError" , it1) }
+            }
+            .collect{
+
+                _locationData.value = it
+
+            }
+
     }
 
 }
