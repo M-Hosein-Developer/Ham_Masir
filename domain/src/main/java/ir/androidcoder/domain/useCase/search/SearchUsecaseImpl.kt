@@ -1,6 +1,7 @@
 package ir.androidcoder.domain.useCase.search
 
 import ir.androidcoder.domain.entities.HomeEntity
+import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.domain.repository.SearchRepository
 
@@ -15,5 +16,11 @@ class SearchUsecaseImpl(private val searchRepository: SearchRepository) : Search
     override suspend fun insertWorkLocation(workEntity: WorkEntity) = searchRepository.insertWorkLocation(workEntity)
 
     override suspend fun getWorkLocation(): WorkEntity = searchRepository.getWorkLocation()
+
+    //search location
+    override suspend fun insertSearchLocation(searchEntity: SearchEntity) = searchRepository.insertSearchLocation(searchEntity)
+
+    override suspend fun getSearchLocation(): List<SearchEntity> = searchRepository.getSearchLocation()
+
 
 }
