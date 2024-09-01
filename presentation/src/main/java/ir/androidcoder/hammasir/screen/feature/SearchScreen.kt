@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,11 +61,14 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
         Category("سرویس بهداشتی", R.drawable.wc),
     )
 
+
+    Box(Modifier.fillMaxSize()) {
+
+
     Column(
         Modifier
             .fillMaxSize()
-            .padding(top = 42.dp , bottom = 32.dp)
-
+            .padding(top = 42.dp, bottom = 32.dp)
     ) {
 
         SearchTextField(
@@ -82,7 +89,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
             LocationByCategory(categories) {
 
-                when(it){
+                when (it) {
 
                     categories[0].categoryName -> {}
                     categories[1].categoryName -> {}
@@ -104,12 +111,12 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                 onHomeClicked = {
                     val result = searchViewModel.homeLocation.value
                     if (result != null)
-                    navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
+                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString())
                 },
                 onWorkClicked = {
                     val result = searchViewModel.workLocation.value
                     if (result != null)
-                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" +result.longitude.toString() )
+                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString())
                 }
             )
 
@@ -124,7 +131,24 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
         }
 
+    }
 
+        FloatingActionButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.padding(start = 16.dp, bottom = 72.dp).align(Alignment.BottomStart),
+
+            ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "انتخاب از روی نقشه", Modifier.padding(start = 12.dp))
+                Icon(
+                    painter = painterResource(R.drawable.finding_map),
+                    contentDescription = null,
+                    Modifier.padding(horizontal = 12.dp)
+                )
+            }
+        }
     }
 
 }
@@ -204,6 +228,7 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .wrapContentHeight()
             .padding(vertical = 14.dp)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
