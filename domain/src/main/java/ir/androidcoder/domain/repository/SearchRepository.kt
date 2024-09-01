@@ -1,6 +1,7 @@
 package ir.androidcoder.domain.repository
 
 import ir.androidcoder.domain.entities.HomeEntity
+import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.domain.entities.WorkEntity
 
 interface SearchRepository {
@@ -13,5 +14,7 @@ interface SearchRepository {
     suspend fun insertWorkLocation(workLocation : WorkEntity)
     suspend fun getWorkLocation() : WorkEntity
 
-
+    //search location
+    suspend fun insertSearchLocation(searchEntity: SearchEntity)
+    suspend fun getSearchLocation() : List<SearchEntity>
 }

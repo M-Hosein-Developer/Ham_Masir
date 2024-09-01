@@ -3,9 +3,12 @@ package ir.androidcoder.data.repository
 import ir.androidcoder.data.local.MyDao
 import ir.androidcoder.data.mapper.toHomeData
 import ir.androidcoder.data.mapper.toHomeDomain
+import ir.androidcoder.data.mapper.toSearchData
+import ir.androidcoder.data.mapper.toSearchDomainList
 import ir.androidcoder.data.mapper.toWorkData
 import ir.androidcoder.data.mapper.toWorkDomain
 import ir.androidcoder.domain.entities.HomeEntity
+import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.domain.repository.SearchRepository
 
@@ -21,5 +24,9 @@ class SearchRepositoryImpl(private val dao: MyDao) : SearchRepository {
 
     override suspend fun getWorkLocation(): WorkEntity = dao.getWorkItem()?.toWorkDomain() ?: WorkEntity(0 , 0.0 , 0.0 , "" , "" , "")
 
+    //Search Location
+    override suspend fun insertSearchLocation(searchEntity: SearchEntity) = dao.insertSearchItem(searchEntity.toSearchData())
+
+    override suspend fun getSearchLocation(): List<SearchEntity> = dao.getSearchItems().toSearchDomainList()
 
 }
