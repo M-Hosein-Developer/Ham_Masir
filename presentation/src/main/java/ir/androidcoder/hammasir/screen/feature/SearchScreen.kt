@@ -120,7 +120,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                     .background(Color.LightGray)
             )
 
-            SearchResult()
+            SearchResult(searchViewModel)
 
         }
 
@@ -242,46 +242,52 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 }
 
 @Composable
-fun SearchResult(){
+fun SearchResult(searchViewModel: SearchViewModel) {
 
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(vertical = 6.dp)
-    ) {
+    searchViewModel.searchLocation.value?.forEach {
 
-        Text(
-            text = "دماوند",
-            modifier = Modifier
+        Column(
+            Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            style = TextStyle(
-                textAlign = TextAlign.End,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
+                .padding(horizontal = 16.dp)
+                .padding(vertical = 6.dp)
+        ) {
 
-        Text(
-            text = "خیابان دماوند",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .padding(bottom = 8.dp),
-            style = TextStyle(
-                textAlign = TextAlign.End,
+            Text(
+                text = it.city,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                style = TextStyle(
+                    textAlign = TextAlign.End,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
-        )
+            )
 
-        Spacer(
-            modifier = Modifier
-                .height(1.dp)
-                .fillMaxWidth()
-                .background(Color.LightGray)
-        )
+            Text(
+                text = it.address,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .padding(bottom = 8.dp),
+                style = TextStyle(
+                    textAlign = TextAlign.End,
+                )
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            )
+
+        }
+
 
     }
+
 
 }
 
