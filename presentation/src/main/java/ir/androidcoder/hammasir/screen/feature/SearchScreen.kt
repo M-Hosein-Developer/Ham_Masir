@@ -111,12 +111,12 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                 onHomeClicked = {
                     val result = searchViewModel.homeLocation.value
                     if (result != null)
-                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString())
+                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString() + "/" + result.name)
                 },
                 onWorkClicked = {
                     val result = searchViewModel.workLocation.value
                     if (result != null)
-                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString())
+                        navController.navigate(MyScreen.MapScreen.route + "/" + result.latitude.toString() + "/" + result.longitude.toString() + "/" + result.name)
                 }
             )
 

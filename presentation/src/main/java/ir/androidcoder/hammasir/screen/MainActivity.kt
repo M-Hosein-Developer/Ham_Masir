@@ -49,15 +49,15 @@ class MainActivity : ComponentActivity() {
 fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}") {
+    NavHost(navController = navController, startDestination = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}/{name}") {
 
         composable(
-            route = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}",
-            arguments = listOf(navArgument("latLocation") {type = NavType.StringType} , navArgument("longLocation") {type = NavType.StringType} ),
+            route = MyScreen.MapScreen.route + "/{latLocation}/{longLocation}/{name}",
+            arguments = listOf(navArgument("latLocation") {type = NavType.StringType} , navArgument("longLocation") {type = NavType.StringType}  , navArgument("name") {type = NavType.StringType}),
             enterTransition = { slideInHorizontally(initialOffsetX = { 500 }) + fadeIn() },
             exitTransition = { slideOutHorizontally(targetOffsetX = { -500 }) + fadeOut() },
             ){
-            MapScreen(mapViewModel , navController , searchViewModel , it.arguments?.getString("latLocation") , it .arguments?.getString("longLocation"))
+            MapScreen(mapViewModel , navController , searchViewModel , it.arguments?.getString("latLocation") , it .arguments?.getString("longLocation") , it .arguments?.getString("name"))
         }
 
         composable(
