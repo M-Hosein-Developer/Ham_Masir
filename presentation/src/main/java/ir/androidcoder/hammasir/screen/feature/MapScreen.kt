@@ -76,7 +76,7 @@ fun MapScreen(
     searchViewModel: SearchViewModel,
     lat: String?,
     long: String?,
-
+    name: String?,
     ) {
 
     val context = LocalContext.current
@@ -90,7 +90,7 @@ fun MapScreen(
             Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
         ) {
 
-            MapSetting(mapViewModel, searchViewModel , GeoPoint(lat?.toDouble() ?: 0.0 , long?.toDouble() ?: 0.0))
+            MapSetting(mapViewModel, searchViewModel , GeoPoint(lat?.toDouble() ?: 0.0 , long?.toDouble() ?: 0.0) , name)
             LocationButtonSetting {
                 mapViewModel.getUserLocation(context) { lat, long ->
                     mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
@@ -112,7 +112,12 @@ fun MapScreen(
 }
 
 @Composable
-fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, homeWorkPoint: GeoPoint) {
+fun MapSetting(
+    mapViewModel: MapViewModel,
+    searchViewModel: SearchViewModel,
+    homeWorkPoint: GeoPoint,
+    name: String?
+) {
 
     //variables
     val context = LocalContext.current
@@ -163,7 +168,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
 
                         mapViewModel.setInitialMarker(GeoPoint(lat, long))
 
-                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation.value)
+                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation.value , name)
                     }
 
 
@@ -293,6 +298,7 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
                     ""
                 )
             )
+            mapViewModel.addWorkMarkerClicked(homeAndWorkPoint.value)
             dialog.value = it
         },
         dismiss = { dialog.value = it }
@@ -301,10 +307,10 @@ fun MapSetting(mapViewModel: MapViewModel, searchViewModel: SearchViewModel, hom
     //BottomSheet
     BottomSheet(
         streetName = if (
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name != null ||
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name != ""
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != null &&
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != ""
             )
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.size-1].street_name
+            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name
         else
             "نامی یافت نشد",
         distance = locationData.value.paths[0].distance.toString(),
@@ -518,11 +524,6 @@ fun BottomSheet(
 
                 Button(
                     onClick = {
-//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-//                            if (!sheetState.isVisible) {
-//                                onShowBottomSheet.invoke(false)
-//                            }
-//                        }
 
                         onRoutingClicked.invoke()
 
@@ -548,12 +549,17 @@ fun BottomSheet(
 fun homeWorkLocation(
     homeWorkPoint: GeoPoint,
     mapViewModel: MapViewModel,
-    userLocation: Pair<Double, Double>
+    userLocation: Pair<Double, Double>,
+    name: String?
 ) {
 
     if (homeWorkPoint.latitude != 0.0) {
 
-        mapViewModel.addHomeMarkerClicked(homeWorkPoint)
+        if (name == "خانه")
+             mapViewModel.addHomeMarkerClicked(homeWorkPoint)
+        else
+            mapViewModel.addWorkMarkerClicked(homeWorkPoint)
+
 
         mapViewModel.drawManualRoute(
             GeoPoint(userLocation.first, userLocation.second),

@@ -45,7 +45,8 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     lateinit var mMap: MapView
     private lateinit var mMyLocationOverlay: MyLocationNewOverlay
     private var clickMarker: Marker? = null
-    private var HomeMarker: Marker? = null
+    private var homeMarker: Marker? = null
+    private var workMarker: Marker? = null
     private var initialMarker: Marker? = null
 
     //---Location Data------------------------------------------------------------------------------
@@ -116,14 +117,26 @@ class MapViewModel @Inject constructor(private val context: Context , private va
     }
 
     fun addHomeMarkerClicked(point: GeoPoint) {
-        if (HomeMarker == null) {
-            HomeMarker = Marker(mMap).apply {
+        if (homeMarker == null) {
+            homeMarker = Marker(mMap).apply {
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 icon = resizeDrawable(R.drawable.home_location, 120, 120)
                 mMap.overlays.add(this)
             }
         }
-        HomeMarker?.position = point
+        homeMarker?.position = point
+        mMap.invalidate()
+    }
+
+    fun addWorkMarkerClicked(point: GeoPoint) {
+        if (workMarker == null) {
+            workMarker = Marker(mMap).apply {
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                icon = resizeDrawable(R.drawable.work, 70, 70)
+                mMap.overlays.add(this)
+            }
+        }
+        workMarker?.position = point
         mMap.invalidate()
     }
 
