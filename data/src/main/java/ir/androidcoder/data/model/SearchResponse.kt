@@ -1,14 +1,25 @@
 package ir.androidcoder.data.model
 
 data class SearchResponse(
-
-    val id : Int ,
-    val name : String,
-    val latitude : Double,
-    val longitude : Double,
-    val address : String,
-    val city : String,
-    val category : String,
-    val phone : String,
-
-)
+    val hits: List<Hit>,
+    val locale: String
+) {
+    data class Hit(
+        val city: String,
+        val country: String,
+        val countrycode: String,
+        val extent: List<Double>,
+        val name: String,
+        val osm_id: Int,
+        val osm_key: String,
+        val osm_type: String,
+        val osm_value: String,
+        val point: Point,
+        val state: String
+    ) {
+        data class Point(
+            val lat: Double,
+            val lng: Double
+        )
+    }
+}
