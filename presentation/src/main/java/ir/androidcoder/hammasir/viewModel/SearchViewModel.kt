@@ -9,6 +9,7 @@ import ir.androidcoder.domain.entities.HomeEntity
 import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.domain.useCase.search.SearchUsecase
+import ir.androidcoder.hammasir.util.coroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,8 +43,8 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
     }
 
     //---search location----------------------------------------------------------------------------
-    fun getSearchLocation(search : String , onSearchLocation :(SearchEntity) -> Unit) = viewModelScope.launch {
-        onSearchLocation.invoke(usecase.getSearchLocation(search , "pe"))
+    fun getSearchLocation(search : String , onSearchLocation :(SearchEntity) -> Unit) = viewModelScope.launch(coroutineExceptionHandler) {
+        onSearchLocation.invoke(usecase.getSearchLocation(search , ""))
     }
 
 
