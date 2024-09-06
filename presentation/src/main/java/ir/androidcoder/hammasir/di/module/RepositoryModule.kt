@@ -22,6 +22,6 @@ class RepositoryModule {
 
     @Provides
     @Suppress
-    fun provideSettingRepository(dao: MyDao) : SearchRepository = SearchRepositoryImpl(dao)
+    fun provideSettingRepository(dao: MyDao , apiService: ApiService) : SearchRepository = SearchRepositoryImpl(dao , apiService)
 
 }
