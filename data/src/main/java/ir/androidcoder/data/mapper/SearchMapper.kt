@@ -54,20 +54,20 @@ fun ir.androidcoder.data.local.entities.WorkEntity.toWorkDomain() = WorkEntity(
 //Search Mapper
 fun SearchResponse.toSearchEntity(): SearchEntity {
     return SearchEntity(
-        hits = this.hits.map { hit ->
+        hits = this.hits?.map { hit ->
             SearchEntity.Hit(
                 city = hit.city,
                 country = hit.country,
                 countrycode = hit.countrycode,
-                extent = hit.extent.toList(),
+                extent = hit.extent?.toList(),
                 name = hit.name,
                 osm_id = hit.osm_id,
                 osm_key = hit.osm_key,
                 osm_type = hit.osm_type,
                 osm_value = hit.osm_value,
                 point = SearchEntity.Hit.Point(
-                    lat = hit.point.lat,
-                    lng = hit.point.lng
+                    lat = hit.point?.lat,
+                    lng = hit.point?.lng
                 ),
                 state = hit.state
             )
@@ -76,26 +76,26 @@ fun SearchResponse.toSearchEntity(): SearchEntity {
     )
 }
 
-fun SearchEntity.toSearchResponse(): SearchResponse {
-    return SearchResponse(
-        hits = this.hits.map { hit ->
-            SearchResponse.Hit(
-                city = hit.city,
-                country = hit.country,
-                countrycode = hit.countrycode,
-                extent = hit.extent.toList(),
-                name = hit.name,
-                osm_id = hit.osm_id,
-                osm_key = hit.osm_key,
-                osm_type = hit.osm_type,
-                osm_value = hit.osm_value,
-                point = SearchResponse.Hit.Point(
-                    lat = hit.point.lat,
-                    lng = hit.point.lng
-                ),
-                state = hit.state
-            )
-        },
-        locale = this.locale
-    )
-}
+//fun SearchEntity.toSearchResponse(): SearchResponse {
+//    return SearchResponse(
+//        hits = this.hits.map { hit ->
+//            SearchResponse.Hit(
+//                city = hit.city,
+//                country = hit.country,
+//                countrycode = hit.countrycode,
+//                extent = hit.extent.toList(),
+//                name = hit.name,
+//                osm_id = hit.osm_id,
+//                osm_key = hit.osm_key,
+//                osm_type = hit.osm_type,
+//                osm_value = hit.osm_value,
+//                point = SearchResponse.Hit.Point(
+//                    lat = hit.point.lat,
+//                    lng = hit.point.lng
+//                ),
+//                state = hit.state
+//            )
+//        },
+//        locale = this.locale
+//    )
+//}
