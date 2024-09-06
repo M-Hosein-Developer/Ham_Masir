@@ -23,10 +23,6 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
     private val _workLocation = MutableLiveData<WorkEntity>()
     val workLocation : LiveData<WorkEntity> = _workLocation
 
-    //search location
-    private val _searchLocation = MutableLiveData<List<SearchEntity>>()
-    val searchLocation : LiveData<List<SearchEntity>> = _searchLocation
-
     //---home location------------------------------------------------------------------------------
     fun insertHomeLocation(homeLocation : HomeEntity) = viewModelScope.launch {
         usecase.insertHomeLocation(homeLocation)
@@ -45,13 +41,9 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
         _workLocation.value = usecase.getWorkLocation()
     }
 
-    //---search location------------------------------------------------------------------------------
-    fun insertSearchLocation(searchEntity: SearchEntity) = viewModelScope.launch {
-        usecase.insertSearchLocation(searchEntity)
-    }
-
-    fun getSearchLocation() = viewModelScope.launch {
-        _searchLocation.value = usecase.getSearchLocation()
+    //---search location----------------------------------------------------------------------------
+    fun getSearchLocation(search : String , onSearchLocation :(SearchEntity) -> Unit) = viewModelScope.launch {
+        onSearchLocation.invoke(usecase.getSearchLocation(search , "pe"))
     }
 
 
