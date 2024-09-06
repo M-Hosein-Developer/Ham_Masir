@@ -21,7 +21,8 @@ interface ApiService {
     suspend fun getGeocode(
         @Query("q") query: String,
         @Query("locale") locale: String,
-        @Query("key") apiKey: String
+        @Query("key") apiKey: String,
+        @Query("limit") limit: Int = 10
     ): SearchResponse
 
 }
