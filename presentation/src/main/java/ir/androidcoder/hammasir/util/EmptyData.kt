@@ -2,6 +2,7 @@ package ir.androidcoder.hammasir.util
 
 import androidx.compose.runtime.mutableStateOf
 import ir.androidcoder.domain.entities.RouteEntity
+import ir.androidcoder.domain.entities.SearchEntity
 
 val locationDataEmpty = mutableStateOf(
     RouteEntity(
@@ -48,3 +49,42 @@ val locationDataEmpty = mutableStateOf(
         )
     )
 )
+
+val fakeSearchEntity = SearchEntity(
+    hits = listOf(
+        SearchEntity.Hit(
+            city = "Tehran",
+            country = "Iran",
+            countrycode = "IR",
+            extent = listOf(51.25, 35.50, 51.55, 35.90),
+            name = "Tehran",
+            osm_id = 123456,
+            osm_key = "place",
+            osm_type = "node",
+            osm_value = "city",
+            point = SearchEntity.Hit.Point(
+                lat = 35.6892,
+                lng = 51.3890
+            ),
+            state = "Tehran"
+        ),
+        SearchEntity.Hit(
+            city = "Paris",
+            country = "France",
+            countrycode = "FR",
+            extent = listOf(2.2242, 48.8156, 2.4699, 48.9022),
+            name = "Paris",
+            osm_id = 789012,
+            osm_key = "place",
+            osm_type = "node",
+            osm_value = "city",
+            point = SearchEntity.Hit.Point(
+                lat = 48.8566,
+                lng = 2.3522
+            ),
+            state = "Île-de-France"
+        )
+    ),
+    locale = "en_US"
+)
+

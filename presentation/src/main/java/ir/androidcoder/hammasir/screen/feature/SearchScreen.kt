@@ -8,17 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material3.FloatingActionButton
@@ -39,18 +37,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
 import ir.androidcoder.hammasir.util.MyScreen
+import ir.androidcoder.hammasir.util.fakeSearchEntity
 import ir.androidcoder.hammasir.viewModel.SearchViewModel
 
 @Composable
 fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewModel) {
 
     var searchText by remember { mutableStateOf("") }
+    val searchData = remember { mutableStateOf(fakeSearchEntity) }
     searchViewModel.getHomeLocation()
     searchViewModel.getWorkLocation()
 
@@ -61,6 +63,9 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
         Category("سرویس بهداشتی", R.drawable.wc),
     )
 
+    searchViewModel.getSearchLocation(searchText) {
+        searchData.value = it
+    }
 
     Box(Modifier.fillMaxSize()) {
 
@@ -83,8 +88,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
         Column(
             Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
         ) {
 
             LocationByCategory(categories) {
@@ -127,7 +131,11 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                     .background(Color.LightGray)
             )
 
-            SearchResult(searchViewModel)
+            searchData.value.hits?.let {
+                SearchResult(
+                    it
+                )
+            }
 
         }
 
@@ -135,7 +143,9 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
         FloatingActionButton(
             onClick = { navController.popBackStack() },
-            modifier = Modifier.padding(start = 16.dp, bottom = 72.dp).align(Alignment.BottomStart),
+            modifier = Modifier
+                .padding(start = 16.dp, bottom = 72.dp)
+                .align(Alignment.BottomStart),
 
             ) {
             Row(
@@ -248,7 +258,6 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
         Spacer(modifier = Modifier
             .background(Color.LightGray)
             .width(2.dp)
-            .fillMaxHeight()
             .padding(24.dp))
 
         TextButton(
@@ -267,19 +276,32 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 }
 
 @Composable
-fun SearchResult(searchViewModel: SearchViewModel) {
+fun SearchResult(data: List<SearchEntity.Hit>) {
 
-    searchViewModel.searchLocation.value?.forEach {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        items(data.size) {
+            SearchResultItem(data[it])
+        }
+    }
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(vertical = 6.dp)
+}
+
+@Composable
+fun SearchResultItem(data: SearchEntity.Hit) {
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 6.dp)
         ) {
 
             Text(
-                text = it.city,
+                text = data.name ?: "نام",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
@@ -291,14 +313,21 @@ fun SearchResult(searchViewModel: SearchViewModel) {
             )
 
             Text(
-                text = it.address,
+                text =
+                (if (data.country != null)data.country + "," else "")
+                        + (if(data.state != null) data.state + "," else "")
+                        +(if (data.city != null) data.city + "," else "")
+                        +(if (data.name != null) data.name + "," else "")
+
+                ,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
                     .padding(bottom = 8.dp),
                 style = TextStyle(
-                    textAlign = TextAlign.End,
-                )
+                    textDirection = TextDirection.Rtl
+                ),
+                maxLines = 1
             )
 
             Spacer(
@@ -307,9 +336,6 @@ fun SearchResult(searchViewModel: SearchViewModel) {
                     .fillMaxWidth()
                     .background(Color.LightGray)
             )
-
-        }
-
 
     }
 
