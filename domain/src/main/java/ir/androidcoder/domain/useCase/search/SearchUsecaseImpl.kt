@@ -18,9 +18,7 @@ class SearchUsecaseImpl(private val searchRepository: SearchRepository) : Search
     override suspend fun getWorkLocation(): WorkEntity = searchRepository.getWorkLocation()
 
     //search location
-    override suspend fun insertSearchLocation(searchEntity: SearchEntity) = searchRepository.insertSearchLocation(searchEntity)
-
-    override suspend fun getSearchLocation(): List<SearchEntity> = searchRepository.getSearchLocation()
+    override suspend fun getSearchLocation(search: String, language: String): SearchEntity = searchRepository.getSearchLocation(search , language)
 
 
 }
