@@ -3,16 +3,16 @@ package ir.androidcoder.data.repository
 import ir.androidcoder.data.local.MyDao
 import ir.androidcoder.data.mapper.toHomeData
 import ir.androidcoder.data.mapper.toHomeDomain
-import ir.androidcoder.data.mapper.toSearchData
-import ir.androidcoder.data.mapper.toSearchDomainList
+import ir.androidcoder.data.mapper.toSearchEntity
 import ir.androidcoder.data.mapper.toWorkData
 import ir.androidcoder.data.mapper.toWorkDomain
+import ir.androidcoder.data.remote.ApiService
 import ir.androidcoder.domain.entities.HomeEntity
 import ir.androidcoder.domain.entities.SearchEntity
 import ir.androidcoder.domain.entities.WorkEntity
 import ir.androidcoder.domain.repository.SearchRepository
 
-class SearchRepositoryImpl(private val dao: MyDao) : SearchRepository {
+class SearchRepositoryImpl(private val dao: MyDao , private val apiService: ApiService) : SearchRepository {
 
     //Home Location
     override suspend fun insertHomeLocation(homeLocation: HomeEntity) = dao.insertHomeItem(homeLocation.toHomeData())
@@ -25,8 +25,7 @@ class SearchRepositoryImpl(private val dao: MyDao) : SearchRepository {
     override suspend fun getWorkLocation(): WorkEntity = dao.getWorkItem()?.toWorkDomain() ?: WorkEntity(0 , 0.0 , 0.0 , "" , "" , "")
 
     //Search Location
-    override suspend fun insertSearchLocation(searchEntity: SearchEntity) = dao.insertSearchItem(searchEntity.toSearchData())
+    override suspend fun getSearchLocation(search : String , language : String): SearchEntity = apiService.getGeocode(search , language , "c5178a7a-f816-43d3-a1ba-d7434c8670f7").toSearchEntity()
 
-    override suspend fun getSearchLocation(): List<SearchEntity> = dao.getSearchItems().toSearchDomainList()
 
 }

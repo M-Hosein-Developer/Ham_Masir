@@ -15,6 +15,5 @@ interface SearchRepository {
     suspend fun getWorkLocation() : WorkEntity
 
     //search location
-    suspend fun insertSearchLocation(searchEntity: SearchEntity)
-    suspend fun getSearchLocation() : List<SearchEntity>
+    suspend fun getSearchLocation(search : String , language : String) : SearchEntity
 }
