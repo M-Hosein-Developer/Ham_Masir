@@ -131,11 +131,9 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                     .background(Color.LightGray)
             )
 
-            searchData.value.hits?.let {
-                SearchResult(
-                    it
-                )
-            }
+            if (searchData.value.hits!![0].name != "Tehran")
+                SearchResult(searchData.value.hits!!)
+
 
         }
 
@@ -193,7 +191,8 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick:
         textStyle = TextStyle(
             textAlign = TextAlign.End
         ),
-        shape = RoundedCornerShape(32.dp)
+        shape = RoundedCornerShape(32.dp),
+        maxLines = 1
     )
 
 }
