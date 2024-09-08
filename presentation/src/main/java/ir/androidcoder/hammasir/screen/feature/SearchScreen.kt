@@ -132,7 +132,9 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
             )
 
             if (searchData.value.hits!![0].name != "Tehran")
-                SearchResult(searchData.value.hits!!)
+                SearchResult(searchData.value.hits!!){ lat , lng , name ->
+                    navController.navigate(MyScreen.MapScreen.route + "/" + lat.toString() + "/" + lng.toString() + "/" + name)
+                }
 
 
         }
@@ -275,7 +277,7 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 }
 
 @Composable
-fun SearchResult(data: List<SearchEntity.Hit>) {
+fun SearchResult(data: List<SearchEntity.Hit> , onLocationClicked :(Double , Double , String) -> Unit) {
 
     LazyColumn(
         modifier = Modifier
@@ -283,20 +285,24 @@ fun SearchResult(data: List<SearchEntity.Hit>) {
             .padding(horizontal = 16.dp)
     ) {
         items(data.size) {
-            SearchResultItem(data[it])
+            SearchResultItem(data[it]){ lat , lng , name ->
+                onLocationClicked.invoke(lat , lng , name)
+            }
+
         }
     }
 
 }
 
 @Composable
-fun SearchResultItem(data: SearchEntity.Hit) {
+    fun SearchResultItem(data: SearchEntity.Hit , onLocationClicked :(Double , Double , String) -> Unit) {
 
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(vertical = 6.dp)
+            .clickable { onLocationClicked.invoke(data.point!!.lat!! , data.point!!.lng!! , data.name ?: "نام") }
         ) {
 
             Text(
