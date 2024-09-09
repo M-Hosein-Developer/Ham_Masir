@@ -104,12 +104,14 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         }
     }
 
-    fun addMarkerClicked(point: GeoPoint) {
+    fun addMarkerClicked(point: GeoPoint , name : String) {
         if (clickMarker == null) {
             clickMarker = Marker(mMap).apply {
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 icon = resizeDrawable(R.drawable.select_locat, 120, 120)
                 mMap.overlays.add(this)
+                title = name
+                showInfoWindow()
             }
         }
         clickMarker?.position = point
