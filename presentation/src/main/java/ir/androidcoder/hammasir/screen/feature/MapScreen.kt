@@ -49,7 +49,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -169,7 +171,7 @@ fun MapSetting(
 
                         mapViewModel.setInitialMarker(GeoPoint(lat, long))
 
-                        SetupLocationIcon(searchData , mapViewModel , userLocation.value , name)
+                        setupLocationIcon(searchData , mapViewModel , userLocation.value , name)
                     }
 
 
@@ -314,7 +316,7 @@ fun MapSetting(
             locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name
         else
             "نامی یافت نشد",
-        distance = locationData.value.paths[0].distance.toString(),
+        distance = locationData.value.paths[0].distance.toString() + " متر ",
         showBottomSheet = showBottomSheet.value,
         onShowBottomSheet = { showBottomSheet.value = it }) {
 
@@ -517,7 +519,10 @@ fun BottomSheet(
                     textAlign = TextAlign.End,
                     fontSize = 12.sp,
                     modifier = Modifier
-                        .padding()
+                        .padding(),
+                    style = TextStyle(
+                        textDirection = TextDirection.Rtl
+                    )
                 )
 
 
@@ -545,7 +550,7 @@ fun BottomSheet(
 }
 
 //--------------------------------------------------------------------------------------------------
-fun SetupLocationIcon(
+fun setupLocationIcon(
     homeWorkPoint: GeoPoint,
     mapViewModel: MapViewModel,
     userLocation: Pair<Double, Double>,
