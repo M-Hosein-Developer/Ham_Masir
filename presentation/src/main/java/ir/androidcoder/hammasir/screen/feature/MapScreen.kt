@@ -114,7 +114,7 @@ fun MapScreen(
 fun MapSetting(
     mapViewModel: MapViewModel,
     searchViewModel: SearchViewModel,
-    homeWorkPoint: GeoPoint,
+    searchData: GeoPoint,
     name: String?
 ) {
 
@@ -122,7 +122,7 @@ fun MapSetting(
     val context = LocalContext.current
     var hasLocationPermission by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    var userLocation = remember { mutableStateOf(Pair(51.131, 12.414)) }
+    val userLocation = remember { mutableStateOf(Pair(51.131, 12.414)) }
     val dialog = remember { mutableStateOf(false) }
     val homeAndWorkPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
     val showBottomSheet = remember { mutableStateOf(false) }
@@ -160,14 +160,16 @@ fun MapSetting(
                     mapViewModel.getUserLocation(context) { lat, long ->
                         userLocation.value = Pair(lat, long)
 
-                        if (homeWorkPoint.latitude == 0.0)
+                        if (searchData.latitude == 0.0) {
                             mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
-                        else
-                            mapViewModel.centerMapAt(homeWorkPoint, 18.0)
+                        }else {
+                            mapViewModel.centerMapAt(searchData, 18.0)
+                            mapViewModel.addMarkerClicked(searchData , name ?: "")
+                        }
 
                         mapViewModel.setInitialMarker(GeoPoint(lat, long))
 
-                        homeWorkLocation(homeWorkPoint , mapViewModel , userLocation.value , name)
+                        SetupLocationIcon(searchData , mapViewModel , userLocation.value , name)
                     }
 
 
@@ -247,7 +249,7 @@ fun MapSetting(
                                     val point = mapView?.projection?.fromPixels(
                                         e.x.toInt(), e.y.toInt()
                                     ) as GeoPoint
-                                    mapViewModel.addMarkerClicked(point)
+                                    mapViewModel.addMarkerClicked(point , "")
                                 }
                                 return true
                             }
@@ -316,7 +318,7 @@ fun MapSetting(
         showBottomSheet = showBottomSheet.value,
         onShowBottomSheet = { showBottomSheet.value = it }) {
 
-        mapViewModel.addMarkerClicked(onSingleTapPoint.value)
+        mapViewModel.addMarkerClicked(onSingleTapPoint.value , name ?: "نامی یافت نشد")
 
         coroutineScope.launch {
 
@@ -485,7 +487,6 @@ fun BottomSheet(
 ) {
 
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -544,7 +545,7 @@ fun BottomSheet(
 }
 
 //--------------------------------------------------------------------------------------------------
-fun homeWorkLocation(
+fun SetupLocationIcon(
     homeWorkPoint: GeoPoint,
     mapViewModel: MapViewModel,
     userLocation: Pair<Double, Double>,
@@ -553,11 +554,19 @@ fun homeWorkLocation(
 
     if (homeWorkPoint.latitude != 0.0) {
 
-        if (name == "خانه")
-             mapViewModel.addHomeMarkerClicked(homeWorkPoint)
-        else
-            mapViewModel.addWorkMarkerClicked(homeWorkPoint)
+        when(name){
 
+            "خانه" ->{
+                mapViewModel.addHomeMarkerClicked(homeWorkPoint)
+            }
+            "محل کار" ->{
+                mapViewModel.addWorkMarkerClicked(homeWorkPoint)
+            }
+            else -> {
+                mapViewModel.addMarkerClicked(homeWorkPoint , name ?: "")
+            }
+
+        }
 
         mapViewModel.drawManualRoute(
             GeoPoint(userLocation.first, userLocation.second),
