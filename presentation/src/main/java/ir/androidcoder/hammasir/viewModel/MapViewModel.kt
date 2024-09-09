@@ -65,7 +65,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         }
 
         mMyLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(mMap.context), mMap).apply {
-            enableMyLocation()
+//            enableMyLocation()
             enableFollowLocation()
             isDrawAccuracyEnabled = true
             runOnFirstFix {
@@ -81,7 +81,7 @@ class MapViewModel @Inject constructor(private val context: Context , private va
         mMap.controller.setCenter(location)
 
         viewModelScope.launch {
-            delay(3000)
+            delay(20000)
             setInitialMarker(location)
         }
 

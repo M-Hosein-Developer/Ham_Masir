@@ -5,7 +5,6 @@ package ir.androidcoder.hammasir.screen.feature
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Canvas
-import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -323,14 +322,13 @@ fun MapSetting(
 
             while (true) {
 
-                Log.v("TestPoint" , GeoPoint(userLocation.value.first, userLocation.value.second).toString())
-
                     mapViewModel.drawManualRoute(
                         GeoPoint(userLocation.value.first, userLocation.value.second),
                         onSingleTapPoint.value
                     )
+                    mapViewModel.centerMapAt(GeoPoint(userLocation.value.first, userLocation.value.second), 18.0)
 
-                delay(2000)
+                delay(20000)
             }
 
         }
