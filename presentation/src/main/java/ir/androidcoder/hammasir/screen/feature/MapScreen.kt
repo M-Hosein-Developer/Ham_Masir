@@ -130,6 +130,7 @@ fun MapSetting(
     val showBottomSheet = remember { mutableStateOf(false) }
     val onSingleTapPoint = remember { mutableStateOf(GeoPoint(51.131, 12.414)) }
     val locationData = remember { mutableStateOf(locationDataEmpty.value) }
+    val searchLocation = remember { mutableStateOf(false) }
 
 
     //permission
@@ -162,18 +163,18 @@ fun MapSetting(
                     mapViewModel.getUserLocation(context) { lat, long ->
                         userLocation.value = Pair(lat, long)
 
+                        mapViewModel.setInitialMarker(GeoPoint(lat, long))
+
                         if (searchData.latitude == 0.0) {
                             mapViewModel.centerMapAt(GeoPoint(lat, long), 18.0)
                         }else {
+                            searchLocation.value = true
+                            mapViewModel.addMarkerClicked(searchData, name ?: "")
                             mapViewModel.centerMapAt(searchData, 18.0)
-                            mapViewModel.addMarkerClicked(searchData , name ?: "")
+                            mapViewModel.setInitialMarker(GeoPoint(lat, long))
                         }
 
-                        mapViewModel.setInitialMarker(GeoPoint(lat, long))
-
-                        setupLocationIcon(searchData , mapViewModel , userLocation.value , name)
                     }
-
 
                     mapView.overlays.add(object : Overlay() {
                         override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {
@@ -308,37 +309,64 @@ fun MapSetting(
     )
 
     //BottomSheet
-    BottomSheet(
-        streetName = if (
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != null &&
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != ""
+    if (showBottomSheet.value) {
+        BottomSheet(
+            streetName = if (
+                locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != null &&
+                locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != ""
             )
-            locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name
-        else
-            "نامی یافت نشد",
-        distance = locationData.value.paths[0].distance.toString() + " متر ",
-        showBottomSheet = showBottomSheet.value,
-        onShowBottomSheet = { showBottomSheet.value = it }) {
+                locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name
+            else
+                "نامی یافت نشد",
+            distance = locationData.value.paths[0].distance.toString() + " متر ",
+            onShowBottomSheet = { showBottomSheet.value = it }) {
 
-        mapViewModel.addMarkerClicked(onSingleTapPoint.value , name ?: "نامی یافت نشد")
+            mapViewModel.addMarkerClicked(onSingleTapPoint.value, name ?: "نامی یافت نشد")
 
-        coroutineScope.launch {
+            coroutineScope.launch {
 
-            while (true) {
+                while (true) {
 
                     mapViewModel.drawManualRoute(
                         GeoPoint(userLocation.value.first, userLocation.value.second),
                         onSingleTapPoint.value
                     )
-                    mapViewModel.centerMapAt(GeoPoint(userLocation.value.first, userLocation.value.second), 18.0)
+                    mapViewModel.centerMapAt(
+                        GeoPoint(
+                            userLocation.value.first,
+                            userLocation.value.second
+                        ), 18.0
+                    )
 
-                delay(20000)
+                    delay(20000)
+                }
+
             }
 
+            showBottomSheet.value = false
+
         }
+    }
 
-        showBottomSheet.value = false
+    if (searchLocation.value) {
+        BottomSheet(streetName = name ?: "",
+            distance = "",
+            onShowBottomSheet = { searchLocation.value = it }) {
+            mapViewModel.centerMapAt(searchData, 18.0)
+            mapViewModel.addMarkerClicked(searchData, name ?: "")
+            setupLocationIcon(searchData, mapViewModel, userLocation.value, name)
+            mapViewModel.centerMapAt(
+                GeoPoint(userLocation.value.first, userLocation.value.second), 18.0
+            )
+            mapViewModel.setInitialMarker(
+                GeoPoint(
+                    userLocation.value.first,
+                    userLocation.value.second
+                )
+            )
 
+            searchLocation.value = false
+        }
     }
 
     DisposableEffect(Unit) {
@@ -483,14 +511,11 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
 fun BottomSheet(
     streetName: String,
     distance: String,
-    showBottomSheet: Boolean,
     onShowBottomSheet: (Boolean) -> Unit,
     onRoutingClicked: () -> Unit
 ) {
 
     val sheetState = rememberModalBottomSheetState()
-
-    if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
                 onShowBottomSheet.invoke(false)
@@ -545,9 +570,8 @@ fun BottomSheet(
 
 
         }
-    }
-
 }
+
 
 //--------------------------------------------------------------------------------------------------
 fun setupLocationIcon(
