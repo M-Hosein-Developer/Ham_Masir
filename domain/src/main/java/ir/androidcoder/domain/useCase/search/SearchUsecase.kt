@@ -2,6 +2,7 @@ package ir.androidcoder.domain.useCase.search
 
 import ir.androidcoder.domain.entities.HomeEntity
 import ir.androidcoder.domain.entities.SearchEntity
+import ir.androidcoder.domain.entities.SearchLocalEntity
 import ir.androidcoder.domain.entities.WorkEntity
 
 interface SearchUsecase {
@@ -17,5 +18,8 @@ interface SearchUsecase {
     //search location
     suspend fun getSearchLocation(search : String , language : String) : SearchEntity
 
+    //search history
+    suspend fun insertSearchHistory(searchHistory : SearchLocalEntity)
+    suspend fun getSearchHistory() : List<SearchLocalEntity>
 
 }
