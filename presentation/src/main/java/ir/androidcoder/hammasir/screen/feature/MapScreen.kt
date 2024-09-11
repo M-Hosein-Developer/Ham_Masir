@@ -3,6 +3,7 @@
 package ir.androidcoder.hammasir.screen.feature
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.view.MotionEvent
@@ -506,6 +507,7 @@ fun AlertDialogLocation(openDialog: Boolean, onHomeClicked: (Boolean) -> Unit, o
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
