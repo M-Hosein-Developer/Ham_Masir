@@ -65,6 +65,8 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
 
         if (usecase.getSearchHistory().isNotEmpty())
             _searchHistory.value = usecase.getSearchHistory()
+        else
+            _searchHistory.value = emptyList()
     }
 
 }
