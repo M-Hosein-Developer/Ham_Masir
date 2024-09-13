@@ -47,6 +47,7 @@ import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.util.fakeSearchEntity
+import ir.androidcoder.hammasir.util.fakeSearchLocalEntity
 import ir.androidcoder.hammasir.viewModel.SearchViewModel
 
 @Composable
@@ -54,8 +55,10 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
     var searchText by remember { mutableStateOf("") }
     val searchData = remember { mutableStateOf(fakeSearchEntity) }
+    val searchLocalData = remember { mutableStateOf(fakeSearchLocalEntity) }
     searchViewModel.getHomeLocation()
     searchViewModel.getWorkLocation()
+    searchViewModel.getSearchHistory()
 
     val categories = listOf(
         Category("پمپ بنزین", R.drawable.gas_station),
@@ -67,6 +70,8 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
     searchViewModel.getSearchLocation(searchText) {
         searchData.value = it
     }
+
+    searchLocalData.value = searchViewModel.searchHistory.value!!
 
     Box(Modifier.fillMaxSize()) {
 
@@ -135,6 +140,16 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
             if (searchData.value.hits!![0].name != "Tehran")
                 SearchResult(
                     searchData.value.hits!!,
+                    { lat, lng, name ->
+                        navController.navigate(MyScreen.MapScreen.route + "/" + lat.toString() + "/" + lng.toString() + "/" + name)
+                    },
+                    {
+                        searchViewModel.insertSearchHistory(it)
+                    }
+                )
+            else
+                LocalSearch(
+                    searchLocalData.value,
                     { lat, lng, name ->
                         navController.navigate(MyScreen.MapScreen.route + "/" + lat.toString() + "/" + lng.toString() + "/" + name)
                     },
@@ -385,6 +400,114 @@ fun SearchResultItem(
                     .fillMaxWidth()
                     .background(Color.LightGray)
             )
+
+    }
+
+
+}
+
+@Composable
+fun LocalSearch(
+    data: List<SearchLocalEntity>,
+    onLocationClicked: (Double, Double, String) -> Unit,
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+) {
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        items(data.size) { it ->
+            LocalSearchItem(
+                data[it],
+                { lat, lng, name ->
+                    onLocationClicked.invoke(lat , lng , name)
+                },
+                {
+                    onLocalSearchClicked.invoke(it)
+                }
+            )
+
+        }
+    }
+
+}
+
+@Composable
+fun LocalSearchItem(
+    data: SearchLocalEntity,
+    onLocationClicked: (Double, Double, String) -> Unit,
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+) {
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 6.dp)
+            .clickable {
+                onLocationClicked.invoke(
+                    data.lat!!,
+                    data.lng,
+                    data.name ?: "نام"
+                )
+
+                onLocalSearchClicked.invoke(
+                    SearchLocalEntity(
+                        osm_id = data.osm_id,
+                        city = data.city,
+                        country = data.country,
+                        countrycode = data.countrycode,
+                        name = data.name,
+                        osm_key = data.osm_key,
+                        osm_type = data.osm_type,
+                        osm_value = data.osm_value,
+                        state = data.state,
+                        lat = data.lat,
+                        lng = data.lng
+                    )
+                )
+
+            }
+    ) {
+
+        Text(
+            text = data.name ?: "نام",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            style = TextStyle(
+                textAlign = TextAlign.End,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Text(
+            text =
+            (if (data.country != null)data.country + "," else "")
+                    + (if(data.state != null) data.state + "," else "")
+                    +(if (data.city != null) data.city + "," else "")
+                    +(if (data.name != null) data.name + "," else "")
+
+            ,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .padding(bottom = 8.dp),
+            style = TextStyle(
+                textDirection = TextDirection.Rtl
+            ),
+            maxLines = 1
+        )
+
+        Spacer(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .background(Color.LightGray)
+        )
 
     }
 
