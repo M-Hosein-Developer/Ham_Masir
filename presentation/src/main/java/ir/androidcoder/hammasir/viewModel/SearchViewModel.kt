@@ -29,9 +29,6 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
     private val _searchHistory = MutableLiveData<List<SearchLocalEntity>>()
     val searchHistory: LiveData<List<SearchLocalEntity>> = _searchHistory
 
-    init {
-        getSearchHistory()
-    }
 
     //---home location------------------------------------------------------------------------------
     fun insertHomeLocation(homeLocation : HomeEntity) = viewModelScope.launch {
@@ -61,7 +58,7 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
         usecase.insertSearchHistory(searchHistory)
     }
 
-    private fun getSearchHistory() = viewModelScope.launch {
+    fun getSearchHistory() = viewModelScope.launch {
 
         if (usecase.getSearchHistory().isNotEmpty())
             _searchHistory.value = usecase.getSearchHistory()
