@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ir.androidcoder.domain.entities.SearchEntity
+import ir.androidcoder.domain.entities.SearchLocalEntity
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.util.Category
 import ir.androidcoder.hammasir.util.MyScreen
@@ -132,9 +133,15 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
             )
 
             if (searchData.value.hits!![0].name != "Tehran")
-                SearchResult(searchData.value.hits!!){ lat , lng , name ->
-                    navController.navigate(MyScreen.MapScreen.route + "/" + lat.toString() + "/" + lng.toString() + "/" + name)
-                }
+                SearchResult(
+                    searchData.value.hits!!,
+                    { lat, lng, name ->
+                        navController.navigate(MyScreen.MapScreen.route + "/" + lat.toString() + "/" + lng.toString() + "/" + name)
+                    },
+                    {
+                        searchViewModel.insertSearchHistory(it)
+                    }
+                )
 
 
         }
@@ -277,17 +284,27 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 }
 
 @Composable
-fun SearchResult(data: List<SearchEntity.Hit> , onLocationClicked :(Double , Double , String) -> Unit) {
+fun SearchResult(
+    data: List<SearchEntity.Hit>,
+    onLocationClicked: (Double, Double, String) -> Unit,
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        items(data.size) {
-            SearchResultItem(data[it]){ lat , lng , name ->
-                onLocationClicked.invoke(lat , lng , name)
-            }
+        items(data.size) { it ->
+            SearchResultItem(
+                data[it],
+                { lat, lng, name ->
+                    onLocationClicked.invoke(lat , lng , name)
+                },
+                {
+                    onLocalSearchClicked.invoke(it)
+                }
+            )
 
         }
     }
@@ -295,14 +312,41 @@ fun SearchResult(data: List<SearchEntity.Hit> , onLocationClicked :(Double , Dou
 }
 
 @Composable
-    fun SearchResultItem(data: SearchEntity.Hit , onLocationClicked :(Double , Double , String) -> Unit) {
+fun SearchResultItem(
+    data: SearchEntity.Hit,
+    onLocationClicked: (Double, Double, String) -> Unit,
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+) {
 
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(vertical = 6.dp)
-            .clickable { onLocationClicked.invoke(data.point!!.lat!! , data.point!!.lng!! , data.name ?: "نام") }
+            .clickable {
+                onLocationClicked.invoke(
+                    data.point!!.lat!!,
+                    data.point!!.lng!!,
+                    data.name ?: "نام"
+                )
+
+                onLocalSearchClicked.invoke(
+                    SearchLocalEntity(
+                        osm_id = data.osm_id,
+                        city = data.city,
+                        country = data.country,
+                        countrycode = data.countrycode,
+                        name = data.name,
+                        osm_key = data.osm_key,
+                        osm_type = data.osm_type,
+                        osm_value = data.osm_value,
+                        state = data.state,
+                        lat = data.point!!.lat,
+                        lng = data.point!!.lng!!
+                    )
+                )
+
+            }
         ) {
 
             Text(
