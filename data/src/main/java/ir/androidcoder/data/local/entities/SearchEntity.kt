@@ -11,7 +11,6 @@ data class SearchEntity(
     val city: String?,
     val country: String?,
     val countrycode: String?,
-    val extent: List<Double>?,
     val name: String?,
     val osm_key: String?,
     val osm_type: String?,
