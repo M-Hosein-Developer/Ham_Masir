@@ -185,6 +185,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
 }
 
+//Search Box
 @Composable
 fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick: () -> Unit) {
 
@@ -221,6 +222,7 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, onBackClick:
 
 }
 
+//Location By Category
 @Composable
 fun LocationByCategory(categories: List<Category>, onItemClicked: (String) -> Unit) {
 
@@ -255,6 +257,7 @@ fun LocationByCategoryItem(category: Category, onItemClicked: (String) -> Unit) 
 
 }
 
+//Important Location
 @Composable
 fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 
@@ -298,6 +301,7 @@ fun ImportantLocation(onHomeClicked :() -> Unit , onWorkClicked :() -> Unit) {
 
 }
 
+//Oline Search
 @Composable
 fun SearchResult(
     data: List<SearchEntity.Hit>,
@@ -406,6 +410,7 @@ fun SearchResultItem(
 
 }
 
+//Local Search Database
 @Composable
 fun LocalSearch(
     data: List<SearchLocalEntity>,
