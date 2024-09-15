@@ -71,7 +71,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
         searchData.value = it
     }
 
-    searchLocalData.value = searchViewModel.searchHistory.value!!
+    searchLocalData.value = searchViewModel.searchHistory.value ?: fakeSearchLocalEntity
 
     Box(Modifier.fillMaxSize()) {
 
@@ -101,10 +101,26 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
                 when (it) {
 
-                    categories[0].categoryName -> {}
-                    categories[1].categoryName -> {}
-                    categories[2].categoryName -> {}
-                    categories[3].categoryName -> {}
+                    categories[0].categoryName -> {
+                        searchViewModel.getSearchLocation(it){
+                            searchData.value = it
+                        }
+                    }
+                    categories[1].categoryName -> {
+                        searchViewModel.getSearchLocation(it){
+                            searchData.value = it
+                        }
+                    }
+                    categories[2].categoryName -> {
+                        searchViewModel.getSearchLocation(it){
+                            searchData.value = it
+                        }
+                    }
+                    categories[3].categoryName -> {
+                        searchViewModel.getSearchLocation(it){
+                            searchData.value = it
+                        }
+                    }
 
                 }
 
