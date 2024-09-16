@@ -26,5 +26,7 @@ class SearchUsecaseImpl(private val searchRepository: SearchRepository) : Search
 
     override suspend fun getSearchHistory(): List<SearchLocalEntity> = searchRepository.getSearchHistory()
 
+    override suspend fun deleteSearchHistory(id: Long) = searchRepository.deleteSearchHistory(id)
+
 
 }
