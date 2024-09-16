@@ -21,4 +21,5 @@ interface SearchRepository {
     //search history
     suspend fun insertSearchHistory(searchHistory : SearchLocalEntity)
     suspend fun getSearchHistory() : List<SearchLocalEntity>
+    suspend fun deleteSearchHistory(id : Long)
 }

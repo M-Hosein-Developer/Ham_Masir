@@ -35,6 +35,7 @@ class SearchRepositoryImpl(private val dao: MyDao , private val apiService: ApiS
 
     override suspend fun getSearchHistory(): List<SearchLocalEntity> = dao.getSearchItems().toSearchEntityDomainList()
 
+    override suspend fun deleteSearchHistory(id: Long) = dao.deleteSearchItem(id)
 
 
 }
