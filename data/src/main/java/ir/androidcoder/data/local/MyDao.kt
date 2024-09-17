@@ -18,7 +18,7 @@ interface MyDao {
     @Query("SELECT * FROM SearchEntity")
     suspend fun getSearchItems(): List<SearchEntity>
 
-    @Query("SELECT * FROM SearchEntity WHERE osm_id = :id")
+    @Query("Delete FROM SearchEntity WHERE osm_id = :id")
     suspend fun deleteSearchItem(id : Long)
 
     //Home
