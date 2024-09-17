@@ -1,8 +1,10 @@
 package ir.androidcoder.hammasir.screen.feature
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -56,6 +60,8 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
     var searchText by remember { mutableStateOf("") }
     val searchData = remember { mutableStateOf(fakeSearchEntity) }
     val searchLocalData = remember { mutableStateOf(fakeSearchLocalEntity) }
+    val deleteDialog  = remember { mutableStateOf(false) }
+    val deleteId = remember { mutableStateOf(0L) }
     searchViewModel.getHomeLocation()
     searchViewModel.getWorkLocation()
     searchViewModel.getSearchHistory()
@@ -171,9 +177,23 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                     },
                     {
                         searchViewModel.insertSearchHistory(it)
+                    },
+                    {bool , id ->
+                        deleteDialog.value = bool
+                        deleteId.value = id
                     }
                 )
 
+            AlertDialogDeleteItem(
+                openDialog = deleteDialog.value,
+                onCancelClicked = { deleteDialog.value = it },
+                onOkClicked = {
+                    searchViewModel.deleteSearchHistory(deleteId.value)
+                    deleteDialog.value = it
+                }
+            ) {
+
+            }
 
         }
 
@@ -431,7 +451,8 @@ fun SearchResultItem(
 fun LocalSearch(
     data: List<SearchLocalEntity>,
     onLocationClicked: (Double, Double, String) -> Unit,
-    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit,
+    onDeleteItem: (Boolean , Long) -> Unit
 ) {
 
     LazyColumn(
@@ -447,6 +468,9 @@ fun LocalSearch(
                 },
                 {
                     onLocalSearchClicked.invoke(it)
+                },
+                {bool , id ->
+                    onDeleteItem.invoke(bool , id)
                 }
             )
 
@@ -455,11 +479,13 @@ fun LocalSearch(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocalSearchItem(
     data: SearchLocalEntity,
     onLocationClicked: (Double, Double, String) -> Unit,
-    onLocalSearchClicked: (SearchLocalEntity) -> Unit
+    onLocalSearchClicked: (SearchLocalEntity) -> Unit,
+    onDeleteItem: (Boolean , Long) -> Unit
 ) {
 
     Column(
@@ -467,30 +493,34 @@ fun LocalSearchItem(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(vertical = 6.dp)
-            .clickable {
-                onLocationClicked.invoke(
-                    data.lat!!,
-                    data.lng,
-                    data.name ?: "نام"
-                )
-
-                onLocalSearchClicked.invoke(
-                    SearchLocalEntity(
-                        osm_id = data.osm_id,
-                        city = data.city,
-                        country = data.country,
-                        countrycode = data.countrycode,
-                        name = data.name,
-                        osm_key = data.osm_key,
-                        osm_type = data.osm_type,
-                        osm_value = data.osm_value,
-                        state = data.state,
-                        lat = data.lat,
-                        lng = data.lng
+            .combinedClickable(
+                onClick = {
+                    onLocationClicked.invoke(
+                        data.lat!!,
+                        data.lng,
+                        data.name ?: "نام"
                     )
-                )
 
-            }
+                    onLocalSearchClicked.invoke(
+                        SearchLocalEntity(
+                            osm_id = data.osm_id,
+                            city = data.city,
+                            country = data.country,
+                            countrycode = data.countrycode,
+                            name = data.name,
+                            osm_key = data.osm_key,
+                            osm_type = data.osm_type,
+                            osm_value = data.osm_value,
+                            state = data.state,
+                            lat = data.lat,
+                            lng = data.lng
+                        )
+                    )
+                },
+                onLongClick = {
+                    onDeleteItem.invoke(true , data.osm_id!!)
+                }
+            )
     ) {
 
         Text(
@@ -532,6 +562,66 @@ fun LocalSearchItem(
 
     }
 
-
 }
+
+@Composable
+fun AlertDialogDeleteItem(openDialog: Boolean, onCancelClicked: (Boolean) -> Unit, onOkClicked: (Boolean) -> Unit, dismiss: (Boolean) -> Unit) {
+
+
+    if (openDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                dismiss.invoke(false)
+            },
+            title = {
+                Text(
+                    text = "حذف موقعیت مکانی",
+                    Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End
+                )
+            },
+            text = {
+                Text(
+                    "آیا از حذف این موقیعت مکانی مطمئن هستید؟",
+                    Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End
+                )
+            },
+            confirmButton = {
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Button(
+                        onClick = {
+                            onCancelClicked.invoke(false)
+                        },
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(0.5f)
+                            .padding(4.dp)
+                    ) {
+                        Text("خیر")
+                    }
+
+                    Button(
+                        onClick = {
+                            onOkClicked.invoke(false)
+                        },
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(0.5f)
+                            .padding(4.dp)
+                    ) {
+                        Text("بله")
+                    }
+                }
+            },
+        )
+    }
+}
+
 
