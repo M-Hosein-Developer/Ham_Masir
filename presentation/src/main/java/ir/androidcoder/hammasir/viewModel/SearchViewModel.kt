@@ -66,4 +66,8 @@ class SearchViewModel @Inject constructor(private val usecase: SearchUsecase) : 
             _searchHistory.value = emptyList()
     }
 
+    fun deleteSearchHistory(id : Long) = viewModelScope.launch {
+        usecase.deleteSearchHistory(id)
+    }
+
 }
