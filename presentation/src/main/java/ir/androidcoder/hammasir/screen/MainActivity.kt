@@ -68,7 +68,7 @@ fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
+                    onClick = { navController.navigate(MyScreen.SettingScreen.route) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
@@ -96,7 +96,7 @@ fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
+                    onClick = { navController.navigate(MyScreen.MapScreen.route) },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.finding_map),
