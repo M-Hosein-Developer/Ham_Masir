@@ -382,7 +382,7 @@ fun LocationButtonSetting(locationButtonSetting: () -> Unit) {
 
     FloatingActionButton(
         onClick = { locationButtonSetting.invoke() },
-        modifier = Modifier.padding(end = 24.dp, bottom = 130.dp)
+        modifier = Modifier.padding(end = 14.dp, bottom = 140.dp)
     ) {
         Icon(painter = painterResource(id = R.drawable.location), contentDescription = null)
     }
