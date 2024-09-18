@@ -111,7 +111,7 @@ dependencies {
     implementation(libs.osmdroid.android)
 
     //GraphHopper
-    implementation ("org.osmdroid:osmdroid-android:6.1.10")
-    implementation ("com.graphhopper:graphhopper-core:6.0")
+    implementation (libs.osmdroid.android.v6110)
+    implementation (libs.graphhopper.core)
 
 }

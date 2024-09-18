@@ -1,6 +1,7 @@
 [versions]
 accompanistNavigationAnimation = "0.30.1"
 agp = "8.5.2"
+graphhopperCore = "6.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,12 +20,13 @@ converterGson = "2.9.0"
 hiltAndroid = "2.50"
 hiltNavigationFragment = "1.2.0"
 kotlinxCoroutinesAndroid = "1.7.3"
-lifecycleRuntimeKtxVersion = "2.8.0"
-lifecycleViewmodelKtx = "2.8.0"
+lifecycleRuntimeKtxVersion = "2.8.5"
+lifecycleViewmodelKtx = "2.8.5"
 lottieCompose = "6.3.0"
 material3Android = "1.2.1"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.0"
 osmdroidAndroid = "6.1.18"
+osmdroidAndroidVersion = "6.1.10"
 roomCommon = "2.6.1"
 roomRuntimeAndroid = "2.7.0-alpha04"
 playServicesLocation = "21.3.0"
@@ -32,6 +34,7 @@ playServicesLocation = "21.3.0"
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+graphhopper-core = { module = "com.graphhopper:graphhopper-core", version.ref = "graphhopperCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -63,6 +66,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+osmdroid-android-v6110 = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroidVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
