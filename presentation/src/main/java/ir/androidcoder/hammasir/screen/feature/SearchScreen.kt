@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,7 +62,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
     val searchData = remember { mutableStateOf(fakeSearchEntity) }
     val searchLocalData = remember { mutableStateOf(fakeSearchLocalEntity) }
     val deleteDialog  = remember { mutableStateOf(false) }
-    val deleteId = remember { mutableStateOf(0L) }
+    val deleteId = remember { mutableLongStateOf(0L) }
     searchViewModel.getHomeLocation()
     searchViewModel.getWorkLocation()
     searchViewModel.getSearchHistory()
@@ -103,7 +104,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                 .fillMaxWidth()
         ) {
 
-            LocationByCategory(categories) {
+            LocationByCategory(categories) { it ->
 
                 when (it) {
 
@@ -180,7 +181,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                     },
                     {bool , id ->
                         deleteDialog.value = bool
-                        deleteId.value = id
+                        deleteId.longValue = id
                     }
                 )
 
@@ -188,7 +189,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                 openDialog = deleteDialog.value,
                 onCancelClicked = { deleteDialog.value = it },
                 onOkClicked = {
-                    searchViewModel.deleteSearchHistory(deleteId.value)
+                    searchViewModel.deleteSearchHistory(deleteId.longValue)
                     deleteDialog.value = it
                 }
             ) {
@@ -207,7 +208,7 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
 
             ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = CenterVertically
             ) {
                 Text(text = "انتخاب از روی نقشه", Modifier.padding(start = 12.dp))
                 Icon(
@@ -269,7 +270,7 @@ fun LocationByCategory(categories: List<Category>, onItemClicked: (String) -> Un
         verticalAlignment = CenterVertically,
         reverseLayout = true
     ) {
-        items(categories.size) {
+        items(categories.size) { it ->
             LocationByCategoryItem(categories[it]) { onItemClicked.invoke(it) }
         }
     }

@@ -313,7 +313,6 @@ fun MapSetting(
     if (showBottomSheet.value) {
         BottomSheet(
             streetName = if (
-                locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != null &&
                 locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name != ""
             )
                 locationData.value.paths[0].instructions[locationData.value.paths[0].instructions.lastIndex].street_name
