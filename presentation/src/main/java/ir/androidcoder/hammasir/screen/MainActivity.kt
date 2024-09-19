@@ -32,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ir.androidcoder.hammasir.R
 import ir.androidcoder.hammasir.screen.feature.MapScreen
 import ir.androidcoder.hammasir.screen.feature.SearchScreen
+import ir.androidcoder.hammasir.screen.feature.SettingScreen
 import ir.androidcoder.hammasir.screen.ui.theme.HamMasirTheme
 import ir.androidcoder.hammasir.util.MyScreen
 import ir.androidcoder.hammasir.viewModel.MapViewModel
@@ -140,6 +141,12 @@ fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
                 route = MyScreen.SearchScreen.route,
             ) {
                 SearchScreen(navController, searchViewModel)
+            }
+
+            composable(
+                route = MyScreen.SettingScreen.route,
+            ){
+                SettingScreen()
             }
 
         }
