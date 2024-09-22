@@ -371,7 +371,7 @@ fun MapSetting(
 
     DisposableEffect(Unit) {
         onDispose {
-            mapViewModel.mMap.onDetach()
+//            mapViewModel.mMap.onDetach()
         }
     }
 }

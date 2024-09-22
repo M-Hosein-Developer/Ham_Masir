@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
 fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     Scaffold(
         bottomBar = {
@@ -97,7 +99,9 @@ fun MyScreen(mapViewModel: MapViewModel , searchViewModel: SearchViewModel) {
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate(MyScreen.MapScreen.route) },
+                    onClick = {
+                        navController.navigate(MyScreen.MapScreen.route + "/0.0/0.0/ ")
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.finding_map),
