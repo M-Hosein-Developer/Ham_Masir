@@ -42,7 +42,7 @@ fun SettingScreen(){
 fun HamMasirProfile(){
 
     Row(
-        Modifier.fillMaxWidth().background(Color.Gray).padding(top = 42.dp),
+        Modifier.fillMaxWidth().background(Color.LightGray).padding(top = 42.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
